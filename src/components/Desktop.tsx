@@ -11,8 +11,39 @@ import Camera from "@/apps/Camera";
 import OceanShell from "@/apps/OceanShell";
 
 import { useDesktopStore } from "@/store/desktopStore";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BootScreen from "@/components/BootScreen";
+import Wikipedia from "@/apps/Wikipedia";
+
+function TopBar() {
+  const [currentTime, setCurrentTime] = useState("");
+
+  useEffect(() => {
+    const updateTime = () => {
+      setCurrentTime(
+        new Date().toLocaleTimeString([], {
+          hour: "numeric",
+          minute: "2-digit",
+        })
+      );
+    };
+
+    updateTime();
+    const interval = window.setInterval(updateTime, 1000);
+    return () => window.clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="pointer-events-none absolute inset-x-0 top-0 z-40 flex h-10 items-center justify-between border-b border-white/15 bg-black/20 px-4 text-sm text-white/95 shadow-[0_1px_0_rgba(255,255,255,0.1)] backdrop-blur-md">
+      <div className="flex items-center">
+        OceanOS
+      </div>
+      <div className="text-[11px] font-medium tracking-[0.25em] uppercase">
+        {currentTime}
+      </div>
+    </div>
+  );
+}
 
 export default function Desktop() {
   const [booting, setBooting] = useState(true);
@@ -23,6 +54,7 @@ export default function Desktop() {
   const settingsOpen = useDesktopStore((state) => state.settingsOpen);
   const cameraOpen = useDesktopStore((state) => state.cameraOpen);
   const shellOpen = useDesktopStore((state) => state.shellOpen);
+  const wikiOpen = useDesktopStore((state) => state.wikiOpen);
   const theme = useDesktopStore((state) => state.theme);
   const wallpaper = useDesktopStore((state) => state.wallpaper);
 
@@ -32,6 +64,7 @@ export default function Desktop() {
   const closeSettings = useDesktopStore((state) => state.closeSettings);
   const closeCamera = useDesktopStore((state) => state.closeCamera);
   const closeShell = useDesktopStore((state) => state.closeShell);
+  const closeWiki = useDesktopStore((state) => state.closeWiki);
 
   const aboutMinimized = useDesktopStore((s) => s.aboutMinimized);
   const musicMinimized = useDesktopStore((s) => s.musicMinimized);
@@ -39,6 +72,7 @@ export default function Desktop() {
   const settingsMinimized = useDesktopStore((s) => s.settingsMinimized);
   const cameraMinimized = useDesktopStore((s) => s.cameraMinimized);
   const shellMinimized = useDesktopStore((s) => s.shellMinimized);
+  const wikiMinimized = useDesktopStore((s) => s.wikiMinimized);
 
   const minimizeAbout = useDesktopStore((s) => s.minimizeAbout);
   const minimizeMusic = useDesktopStore((s) => s.minimizeMusic);
@@ -46,6 +80,7 @@ export default function Desktop() {
   const minimizeSettings = useDesktopStore((s) => s.minimizeSettings);
   const minimizeCamera = useDesktopStore((s) => s.minimizeCamera);
   const minimizeShell = useDesktopStore((s) => s.minimizeShell);
+  const minimizeWiki = useDesktopStore((s) => s.minimizeWiki);
 
   const aboutZIndex = useDesktopStore((s) => s.aboutZIndex);
   const musicZIndex = useDesktopStore((s) => s.musicZIndex);
@@ -53,6 +88,7 @@ export default function Desktop() {
   const settingsZIndex = useDesktopStore((s) => s.settingsZIndex);
   const cameraZIndex = useDesktopStore((s) => s.cameraZIndex);
   const shellZIndex = useDesktopStore((s) => s.shellZIndex);
+  const wikiZIndex = useDesktopStore((s) => s.wikiZIndex);
 
   const focusAbout = useDesktopStore((s) => s.focusAbout);
   const focusMusic = useDesktopStore((s) => s.focusMusic);
@@ -60,6 +96,7 @@ export default function Desktop() {
   const focusSettings = useDesktopStore((s) => s.focusSettings);
   const focusCamera = useDesktopStore((s) => s.focusCamera);
   const focusShell = useDesktopStore((s) => s.focusShell);
+  const focusWiki = useDesktopStore((s) => s.focusWiki);
 
   const wallpaperMap = {
     ocean: "/wallpaper.jpg",
@@ -83,6 +120,7 @@ export default function Desktop() {
           backgroundImage: `url('${wallpaperMap[wallpaper]}')`,
         }}
       >
+        <TopBar />
 
         <Window
           title="About"
@@ -93,10 +131,10 @@ export default function Desktop() {
           onMinimize={minimizeAbout}
           zIndex={aboutZIndex}
           onFocus={focusAbout}
-          x={30}
-          y={30}
-          width={500}
-          height={400}
+          x={20}
+          y={50}
+          width={430}
+          height={360}
         >
           <About />
         </Window>
@@ -110,10 +148,10 @@ export default function Desktop() {
           onMinimize={minimizeMusic}
           zIndex={musicZIndex}
           onFocus={focusMusic}
-          x={560}
-          y={30}
-          width={430}
-          height={760}
+          x={470}
+          y={50}
+          width={420}
+          height={800}
         >
           <Music />
         </Window>
@@ -128,10 +166,10 @@ export default function Desktop() {
           onMinimize={minimizeGallery}
           zIndex={galleryZIndex}
           onFocus={focusGallery}
-          x={30}
-          y={450}
-          width={500}
-          height={500}
+          x={905}
+          y={475}
+          width={370}
+          height={380}
         >
           <Gallery />
         </Window>
@@ -145,10 +183,10 @@ export default function Desktop() {
           onMinimize={minimizeCamera}
           zIndex={cameraZIndex}
           onFocus={focusCamera}
-          x={1380}
-          y={30}
-          width={300}
-          height={450}
+          x={930}
+          y={50}
+          width={320}
+          height={420}
         >
           <Camera />
         </Window>
@@ -162,10 +200,10 @@ export default function Desktop() {
           onMinimize={minimizeSettings}
           zIndex={settingsZIndex}
           onFocus={focusSettings}
-          x={1020}
-          y={490}
-          width={667}
-          height={350}
+          x={1285}
+          y={497}
+          width={410}
+          height={450}
         >
           <Settings />
         </Window>
@@ -179,12 +217,29 @@ export default function Desktop() {
           onMinimize={minimizeShell}
           zIndex={shellZIndex}
           onFocus={focusShell}
-          x={1005}
-          y={30}
-          width={360}
-          height={448}
+          x={1289}
+          y={50}
+          width={400}
+          height={420}
         >
           <OceanShell />
+        </Window>
+
+        <Window
+          title="Web Browser"
+          dockId="wiki-dock"
+          isOpen={wikiOpen}
+          isMinimized={wikiMinimized}
+          onClose={closeWiki}
+          onMinimize={minimizeWiki}
+          zIndex={wikiZIndex}
+          onFocus={focusWiki}
+          x={20}
+          y={432}
+          width={430}
+          height={500}
+        >
+          <Wikipedia />
         </Window>
 
         <Dock />

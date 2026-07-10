@@ -11,6 +11,7 @@ export default function Dock() {
   const settingsOpen = useDesktopStore(s => s.settingsOpen);
   const cameraOpen = useDesktopStore(s => s.cameraOpen);
   const shellOpen = useDesktopStore(s => s.shellOpen);
+  const wikiOpen = useDesktopStore(s => s.wikiOpen);
 
   const aboutMinimized = useDesktopStore(s => s.aboutMinimized);
   const musicMinimized = useDesktopStore(s => s.musicMinimized);
@@ -18,6 +19,7 @@ export default function Dock() {
   const settingsMinimized = useDesktopStore(s => s.settingsMinimized);
   const cameraMinimized = useDesktopStore(s => s.cameraMinimized);
   const shellMinimized = useDesktopStore(s => s.shellMinimized);
+  const wikiMinimized = useDesktopStore(s => s.wikiMinimized);
 
   const openAbout = useDesktopStore(s => s.openAbout);
   const openMusic = useDesktopStore(s => s.openMusic);
@@ -25,12 +27,14 @@ export default function Dock() {
   const openSettings = useDesktopStore(s => s.openSettings);
   const openCamera = useDesktopStore(s => s.openCamera);
   const openShell = useDesktopStore(s => s.openShell);
+  const openWiki = useDesktopStore(s => s.openWiki);
   const restoreAbout = useDesktopStore(s => s.restoreAbout);
   const restoreMusic = useDesktopStore(s => s.restoreMusic);
   const restoreGallery = useDesktopStore(s => s.restoreGallery);
   const restoreSettings = useDesktopStore(s => s.restoreSettings);
   const restoreCamera = useDesktopStore(s => s.restoreCamera);
   const restoreShell = useDesktopStore(s => s.restoreShell);
+  const restoreWiki = useDesktopStore(s => s.restoreWiki);
 
   const soundEffects = useDesktopStore((s) => s.soundEffects);
 
@@ -97,6 +101,13 @@ export default function Dock() {
       icon: "/icons/shell.png",
       isOpen: shellOpen,
       onClick: () => shellMinimized ? restoreShell() : openShell(),
+    },
+    {
+      id: "wiki",
+      dockId: "wiki-dock",
+      icon: "/icons/wikipedia.png",
+      isOpen: wikiOpen,
+      onClick: () => wikiMinimized ? restoreWiki() : openWiki(),
     }
   ];
   

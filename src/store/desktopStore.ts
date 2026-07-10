@@ -9,11 +9,13 @@ type DesktopStore = {
   galleryOpen: boolean;
   settingsOpen: boolean;
   shellOpen: boolean;
-  aboutMinimized: boolean
-  musicMinimized: boolean
-  galleryMinimized: boolean
-  settingsMinimized: boolean  
-  shellMinimized: boolean
+  wikiOpen: boolean;
+  aboutMinimized: boolean;
+  musicMinimized: boolean;
+  galleryMinimized: boolean;
+  settingsMinimized: boolean;  
+  shellMinimized: boolean;
+  wikiMinimized: boolean
 
   highestZIndex: number;
   aboutZIndex: number;
@@ -21,12 +23,14 @@ type DesktopStore = {
   galleryZIndex: number;
   settingsZIndex: number;
   shellZIndex: number;
+  wikiZIndex: number;
 
   focusAbout: () => void;
   focusMusic: () => void;
   focusGallery: () => void;
   focusSettings: () => void;
   focusShell: () => void;
+  focusWiki: () => void;
   openAbout: () => void;
   closeAbout: () => void;
   openMusic: () => void;
@@ -37,6 +41,8 @@ type DesktopStore = {
   closeSettings: () => void;
   openShell: () => void;
   closeShell: () => void;
+  openWiki: () => void;
+  closeWiki: () => void;
   minimizeAbout: () => void
   restoreAbout: () => void
   minimizeMusic: () => void
@@ -47,6 +53,8 @@ type DesktopStore = {
   restoreSettings: () => void
   minimizeShell: () => void
   restoreShell: () => void
+  minimizeWiki: () => void
+  restoreWiki: () => void
 
   cameraOpen: boolean;
   cameraMinimized: boolean;
@@ -79,6 +87,7 @@ export const useDesktopStore = create<DesktopStore>((set) => ({
   settingsOpen: false,
   cameraOpen: false,
   shellOpen: false,
+  wikiOpen: false,
 
   aboutMinimized: false,
   musicMinimized: false,
@@ -86,6 +95,7 @@ export const useDesktopStore = create<DesktopStore>((set) => ({
   settingsMinimized: false,
   cameraMinimized: false,
   shellMinimized: false,
+  wikiMinimized: false,
 
   theme: "ocean",
   wallpaper: "ocean",
@@ -121,6 +131,11 @@ export const useDesktopStore = create<DesktopStore>((set) => ({
   closeShell: () => set({ shellOpen: false }),
   minimizeShell: () => set({ shellMinimized: true }),
   restoreShell: () => set((state) => ({ shellMinimized: false, highestZIndex: state.highestZIndex + 1, shellZIndex: state.highestZIndex + 1, })),
+  openWiki: () => set((state) => ({ wikiOpen: true, wikiMinimized: false, highestZIndex: state.highestZIndex + 1, wikiZIndex: state.highestZIndex + 1 })),
+  closeWiki: () => set({ wikiOpen: false }),
+  minimizeWiki: () => set({ wikiMinimized: true }),
+  restoreWiki: () => set((state) => ({ wikiMinimized: false, highestZIndex: state.highestZIndex + 1, wikiZIndex: state.highestZIndex + 1, })),
+  
   highestZIndex: 100,
   aboutZIndex: 101,
   musicZIndex: 102,
@@ -128,6 +143,7 @@ export const useDesktopStore = create<DesktopStore>((set) => ({
   settingsZIndex: 104,
   cameraZIndex: 105,
   shellZIndex: 106,
+  wikiZIndex: 107,
 
   focusAbout: () => set((state) => ({
     highestZIndex: state.highestZIndex + 1,
@@ -152,5 +168,9 @@ export const useDesktopStore = create<DesktopStore>((set) => ({
   focusShell: () => set((state) => ({
     highestZIndex: state.highestZIndex + 1,
     shellZIndex: state.highestZIndex + 1,
+  })),
+  focusWiki: () => set((state) => ({
+    highestZIndex: state.highestZIndex + 1,
+    wikiZIndex: state.highestZIndex + 1,
   })),
 }));

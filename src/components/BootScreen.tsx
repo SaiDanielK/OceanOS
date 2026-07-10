@@ -126,6 +126,9 @@ export default function BootScreen({ onFinish }: BootScreenProps) {
         <p className="text-xs text-white/70">
           {Math.round(progress)}%
         </p>
+        <h1 className="text-lg font-semibold font-mono text-white/80 drop-shadow-lg text-center">
+          💻15.6 Inch Screen - Go Full Screen for Best Experience!
+        </h1>
       </div>
     </div>
   );

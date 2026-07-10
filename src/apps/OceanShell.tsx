@@ -75,7 +75,7 @@ export default function OceanShell() {
   return (
     <div className="h-full w-full bg-black p-4 font-mono text-sm text-green-300">
       <div
-        className="overflow-auto rounded border border-green-800/40 bg-black/80 p-3"
+        className="terminal-scroll overflow-y-auto flex-1 rounded border border-green-800/40 bg-black/80 p-3"
         style={{ height: terminalHeight }}
       >
         {lines.map((line, index) => (
