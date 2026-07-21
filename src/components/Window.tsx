@@ -10,8 +10,8 @@ type WindowProps = {
   onClose: () => void;
   onMinimize: () => void;
   isMinimized: boolean;
-  x: number;
-  y: number;
+  x?: number;
+  y?: number;
   title: string;
   dockId: string;
   zIndex: number;
@@ -41,16 +41,18 @@ export default function Window({
 
   const [maximized, setMaximized] = useState(false);
 
+  const baseOffset = Math.max(0, zIndex - 100) * 50;
+
   const [bounds, setBounds] = useState({
-    x,
-    y,
+    x: x ?? baseOffset,
+    y: y ?? baseOffset,
     width: width ?? 500,
     height: height ?? 400,
   });
 
   const [previousBounds, setPreviousBounds] = useState({
-    x,
-    y,
+    x: x ?? baseOffset,
+    y: y ?? baseOffset,
     width: width ?? 500,
     height: height ?? 400,
   });

@@ -10,12 +10,22 @@ type DesktopStore = {
   settingsOpen: boolean;
   shellOpen: boolean;
   wikiOpen: boolean;
+  notesOpen: boolean;
+  calculatorOpen: boolean;
+  doomOpen: boolean;
+  storeOpen: boolean;
+  calendarOpen: boolean;
   aboutMinimized: boolean;
   musicMinimized: boolean;
   galleryMinimized: boolean;
   settingsMinimized: boolean;  
   shellMinimized: boolean;
-  wikiMinimized: boolean
+  wikiMinimized: boolean;
+  notesMinimized: boolean;
+  calculatorMinimized: boolean;
+  doomMinimized: boolean;
+  storeMinimized: boolean;
+  calendarMinimized: boolean;
 
   highestZIndex: number;
   aboutZIndex: number;
@@ -24,6 +34,11 @@ type DesktopStore = {
   settingsZIndex: number;
   shellZIndex: number;
   wikiZIndex: number;
+  notesZIndex: number;
+  calculatorZIndex: number;
+  doomZIndex: number;
+  storeZIndex: number;
+  calendarZIndex: number;
 
   focusAbout: () => void;
   focusMusic: () => void;
@@ -31,6 +46,11 @@ type DesktopStore = {
   focusSettings: () => void;
   focusShell: () => void;
   focusWiki: () => void;
+  focusNotes: () => void;
+  focusCalculator: () => void;
+  focusDoom: () => void;
+  focusStore: () => void;
+  focusCalendar: () => void;
   openAbout: () => void;
   closeAbout: () => void;
   openMusic: () => void;
@@ -43,18 +63,39 @@ type DesktopStore = {
   closeShell: () => void;
   openWiki: () => void;
   closeWiki: () => void;
-  minimizeAbout: () => void
-  restoreAbout: () => void
-  minimizeMusic: () => void
-  restoreMusic: () => void
-  minimizeGallery: () => void
-  restoreGallery: () => void
-  minimizeSettings: () => void
-  restoreSettings: () => void
-  minimizeShell: () => void
-  restoreShell: () => void
-  minimizeWiki: () => void
-  restoreWiki: () => void
+  openNotes: () => void;
+  closeNotes: () => void;
+  openCalculator: () => void;
+  closeCalculator: () => void;
+  closeDoom: () => void;
+  openDoom: () => void;
+  closeStore: () => void;
+  openStore: () => void;
+  closeAllApps: () => void;
+  minimizeAbout: () => void;
+  restoreAbout: () => void;
+  minimizeMusic: () => void;
+  restoreMusic: () => void;
+  minimizeGallery: () => void;
+  restoreGallery: () => void;
+  minimizeSettings: () => void;
+  restoreSettings: () => void;
+  minimizeShell: () => void;
+  restoreShell: () => void;
+  minimizeWiki: () => void;
+  restoreWiki: () => void;
+  minimizeNotes: () => void;
+  restoreNotes: () => void;
+  minimizeCalculator: () => void;
+  restoreCalculator: () => void;
+  minimizeDoom: () => void;
+  restoreDoom: () => void;
+  minimizeStore: () => void;
+  restoreStore: () => void;
+  openCalendar: () => void;
+  closeCalendar: () => void;
+  minimizeCalendar: () => void;
+  restoreCalendar: () => void;
 
   cameraOpen: boolean;
   cameraMinimized: boolean;
@@ -88,7 +129,11 @@ export const useDesktopStore = create<DesktopStore>((set) => ({
   cameraOpen: false,
   shellOpen: false,
   wikiOpen: false,
-
+  notesOpen: false,
+  calculatorOpen: false,
+  doomOpen: false,
+  storeOpen: false,
+  calendarOpen: false,
   aboutMinimized: false,
   musicMinimized: false,
   galleryMinimized: false,
@@ -96,7 +141,11 @@ export const useDesktopStore = create<DesktopStore>((set) => ({
   cameraMinimized: false,
   shellMinimized: false,
   wikiMinimized: false,
-
+  notesMinimized: false,
+  calculatorMinimized: false,
+  doomMinimized: false,
+  storeMinimized: false,
+  calendarMinimized: false,
   theme: "ocean",
   wallpaper: "ocean",
   soundEffects: true,
@@ -135,6 +184,55 @@ export const useDesktopStore = create<DesktopStore>((set) => ({
   closeWiki: () => set({ wikiOpen: false }),
   minimizeWiki: () => set({ wikiMinimized: true }),
   restoreWiki: () => set((state) => ({ wikiMinimized: false, highestZIndex: state.highestZIndex + 1, wikiZIndex: state.highestZIndex + 1, })),
+  openNotes: () => set((state) => ({ notesOpen: true, notesMinimized: false, highestZIndex: state.highestZIndex + 1, notesZIndex: state.highestZIndex + 1 })),
+  closeNotes: () => set({ notesOpen: false }),
+  minimizeNotes: () => set({ notesMinimized: true }),
+  restoreNotes: () => set((state) => ({ notesMinimized: false, highestZIndex: state.highestZIndex + 1, notesZIndex: state.highestZIndex + 1, })),  
+  openCalculator: () => set((state) => ({ calculatorOpen: true, calculatorMinimized: false, highestZIndex: state.highestZIndex + 1, calculatorZIndex: state.highestZIndex + 1 })),
+  closeCalculator: () => set({ calculatorOpen: false }),
+  minimizeCalculator: () => set({ calculatorMinimized: true }),
+  restoreCalculator: () => set((state) => ({ calculatorMinimized: false, highestZIndex: state.highestZIndex + 1, calculatorZIndex: state.highestZIndex + 1, })),
+  closeDoom: () => set({ doomOpen: false }),
+  openDoom: () => set((state) => ({ doomOpen: true, doomMinimized: false, highestZIndex: state.highestZIndex + 1, doomZIndex: state.highestZIndex + 1 })),
+  openStore: () => set((state) => ({ storeOpen: true, storeMinimized: false, highestZIndex: state.highestZIndex + 1, storeZIndex: state.highestZIndex + 1 })),
+  closeStore: () => set({ storeOpen: false }),
+  minimizeStore: () => set({ storeMinimized: true }),
+  restoreStore: () => set((state) => ({ storeMinimized: false, highestZIndex: state.highestZIndex + 1, storeZIndex: state.highestZIndex + 1, })),
+  focusStore: () => set((state) => ({ highestZIndex: state.highestZIndex + 1, storeZIndex: state.highestZIndex + 1 })),
+  openCalendar: () => set((state) => ({ calendarOpen: true, calendarMinimized: false, highestZIndex: state.highestZIndex + 1, calendarZIndex: state.highestZIndex + 1 })),
+  closeCalendar: () => set({ calendarOpen: false }),
+  minimizeCalendar: () => set({ calendarMinimized: true }),
+  restoreCalendar: () => set((state) => ({ calendarMinimized: false, highestZIndex: state.highestZIndex + 1, calendarZIndex: state.highestZIndex + 1 })),
+  focusCalendar: () => set((state) => ({ highestZIndex: state.highestZIndex + 1, calendarZIndex: state.highestZIndex + 1 })),
+  closeAllApps: () => set({
+    aboutOpen: false,
+    musicOpen: false,
+    galleryOpen: false,
+    settingsOpen: false,
+    cameraOpen: false,
+    shellOpen: false,
+    wikiOpen: false,
+    notesOpen: false,
+    calculatorOpen: false,
+    doomOpen: false,
+    storeOpen: false,
+    calendarOpen: false,
+    aboutMinimized: false,
+    musicMinimized: false,
+    galleryMinimized: false,
+    settingsMinimized: false,
+    cameraMinimized: false,
+    shellMinimized: false,
+    wikiMinimized: false,
+    notesMinimized: false,
+    calculatorMinimized: false,
+    doomMinimized: false,
+    storeMinimized: false,
+    calendarMinimized: false,
+  }),
+  minimizeDoom: () => set({ doomMinimized: true }),
+  restoreDoom: () => set((state) => ({ doomMinimized: false, highestZIndex: state.highestZIndex + 1, doomZIndex: state.highestZIndex + 1 })),
+  focusDoom: () => set((state) => ({ highestZIndex: state.highestZIndex + 1, doomZIndex: state.highestZIndex + 1 })),
   
   highestZIndex: 100,
   aboutZIndex: 101,
@@ -144,6 +242,11 @@ export const useDesktopStore = create<DesktopStore>((set) => ({
   cameraZIndex: 105,
   shellZIndex: 106,
   wikiZIndex: 107,
+  notesZIndex: 108,
+  calculatorZIndex: 109,
+  doomZIndex: 110,
+  storeZIndex: 111,
+  calendarZIndex: 112,
 
   focusAbout: () => set((state) => ({
     highestZIndex: state.highestZIndex + 1,
@@ -172,5 +275,13 @@ export const useDesktopStore = create<DesktopStore>((set) => ({
   focusWiki: () => set((state) => ({
     highestZIndex: state.highestZIndex + 1,
     wikiZIndex: state.highestZIndex + 1,
+  })),
+  focusNotes: () => set((state) => ({
+    highestZIndex: state.highestZIndex + 1,
+    notesZIndex: state.highestZIndex + 1,
+  })),
+  focusCalculator: () => set((state) => ({
+    highestZIndex: state.highestZIndex + 1,
+    calculatorZIndex: state.highestZIndex + 1,
   })),
 }));

@@ -11,8 +11,11 @@
   "dependencies": {
     "next": "^16.2.9",
     "react": "19.2.4",
+    "react-battery-gauge": "^1.0.7",
+    "react-clock": "^6.0.0",
     "react-dom": "19.2.4",
     "react-rnd": "^10.5.3",
+    "wifi-name": "^3.1.1",
     "zustand": "^5.0.14"
   },
   "devDependencies": {
