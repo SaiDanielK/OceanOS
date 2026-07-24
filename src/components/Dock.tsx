@@ -17,6 +17,7 @@ export default function Dock() {
   const doomOpen = useDesktopStore(s => s.doomOpen);
   const storeOpen = useDesktopStore(s => s.storeOpen);
   const calendarOpen = useDesktopStore(s => s.calendarOpen);
+  const weatherOpen = useDesktopStore(s => s.weatherOpen);
 
   const aboutMinimized = useDesktopStore(s => s.aboutMinimized);
   const musicMinimized = useDesktopStore(s => s.musicMinimized);
@@ -30,6 +31,7 @@ export default function Dock() {
   const doomMinimized = useDesktopStore(s => s.doomMinimized);
   const storeMinimized = useDesktopStore(s => s.storeMinimized);
   const calendarMinimized = useDesktopStore(s => s.calendarMinimized);
+  const weatherMinimized = useDesktopStore(s => s.weatherMinimized);
 
   const openAbout = useDesktopStore(s => s.openAbout);
   const openMusic = useDesktopStore(s => s.openMusic);
@@ -43,6 +45,7 @@ export default function Dock() {
   const openDoom = useDesktopStore(s => s.openDoom);
   const openStore = useDesktopStore(s => s.openStore);
   const openCalendar = useDesktopStore(s => s.openCalendar);
+  const openWeather = useDesktopStore(s => s.openWeather);
   const restoreAbout = useDesktopStore(s => s.restoreAbout);
   const restoreMusic = useDesktopStore(s => s.restoreMusic);
   const restoreGallery = useDesktopStore(s => s.restoreGallery);
@@ -55,6 +58,14 @@ export default function Dock() {
   const restoreDoom = useDesktopStore(s => s.restoreDoom);
   const restoreStore = useDesktopStore(s => s.restoreStore);
   const restoreCalendar = useDesktopStore(s => s.restoreCalendar);
+  const restoreWeather = useDesktopStore(s => s.restoreWeather);
+
+  const filesOpen = useDesktopStore(s=>s.filesOpen);
+  const installedApps = useDesktopStore(s => s.installedApps);
+  const filesMinimized = useDesktopStore(s=>s.filesMinimized);
+
+  const openFiles = useDesktopStore(s=>s.openFiles);
+  const restoreFiles = useDesktopStore(s=>s.restoreFiles);
 
   const soundEffects = useDesktopStore((s) => s.soundEffects);
 
@@ -65,18 +76,19 @@ export default function Dock() {
 
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
-  const getSize = (index: number) => {
-    if (hoveredIndex === null) return 48;
+const getSize = (index: number) => {
+  if (hoveredIndex === null) return 42;
 
-    const distance =
-      Math.abs(index - hoveredIndex);
+  const distance = Math.abs(index - hoveredIndex);
 
-    if (distance === 0) return 90;
-    if (distance === 1) return 72;
-    if (distance === 2) return 58;
+  if (distance === 0) return 70;
+  if (distance === 1) return 65;
+  if (distance === 2) return 50;
+  if (distance === 3) return 45;
 
-    return 48;
-  };
+
+  return 35;
+};
 
   const dockItems = [
     {
@@ -163,9 +175,27 @@ export default function Dock() {
       icon: "/icons/calendar.png",
       isOpen: calendarOpen,
       onClick: () => calendarOpen ? (calendarMinimized ? restoreCalendar() : openCalendar()) : openCalendar(),
+    },
+    {
+      id: "weather",
+      dockId: "weather-dock",
+      icon: "/icons/weather.png",
+      isOpen: weatherOpen,
+      onClick: () => weatherOpen ? (weatherMinimized ? restoreWeather() : openWeather()) : openWeather(),
+    },
+    {
+      id: "files",
+      dockId:"files-dock",
+      icon:"/icons/files.png",
+      isOpen:filesOpen,
+      onClick:()=>filesMinimized
+      ? restoreFiles()
+      : openFiles(),
     }
   ];
   
+  const visibleDockItems = dockItems.filter(item => installedApps.includes(item.id));
+
   return (
     <div
       className="
@@ -179,8 +209,8 @@ export default function Dock() {
         items-end
         gap-4
 
-        px-6
-        py-3
+        px-9.5
+        py-4
 
         rounded-3xl
 
@@ -192,7 +222,7 @@ export default function Dock() {
         shadow-[0_8px_32px_rgba(0,0,0,0.35)]
       "
     >
-      {dockItems.map((item, index) => (
+      {visibleDockItems.map((item, index) => (
         <DockIcon
           key={item.id}
           dockId={item.dockId}

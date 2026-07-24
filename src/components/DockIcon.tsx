@@ -44,7 +44,7 @@ export default function DockIcon({
           src={icon}
           alt="Dock Icon"
           style={{ width: size, height: size }}
-          className="transition-all duration-150"
+          className="transition-all duration-158"
         />
       </button>
 

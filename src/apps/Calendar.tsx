@@ -55,7 +55,6 @@ export default function Calendar() {
 
   return (
     <div className="h-full w-full bg-black/70 p-6 text-white flex flex-col">
-      {/* Header */}
       <div className="mb-6">
         <div className="flex items-center justify-between mb-4">
           <button

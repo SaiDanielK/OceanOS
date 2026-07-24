@@ -3,6 +3,12 @@ import { create } from "zustand";
 type ThemeOption = "ocean" | "midnight" | "sunset";
 type WallpaperOption = "ocean" | "midnight" | "sunset";
 
+type MediaFile = {
+	name: string;
+	type: "music" | "video" | "image" | "note";
+	path?: string;
+};
+
 type DesktopStore = {
   aboutOpen: boolean;
   musicOpen: boolean;
@@ -15,6 +21,7 @@ type DesktopStore = {
   doomOpen: boolean;
   storeOpen: boolean;
   calendarOpen: boolean;
+  weatherOpen: boolean;
   aboutMinimized: boolean;
   musicMinimized: boolean;
   galleryMinimized: boolean;
@@ -26,6 +33,7 @@ type DesktopStore = {
   doomMinimized: boolean;
   storeMinimized: boolean;
   calendarMinimized: boolean;
+  weatherMinimized: boolean;
 
   highestZIndex: number;
   aboutZIndex: number;
@@ -39,6 +47,7 @@ type DesktopStore = {
   doomZIndex: number;
   storeZIndex: number;
   calendarZIndex: number;
+  weatherZIndex: number;
 
   focusAbout: () => void;
   focusMusic: () => void;
@@ -51,6 +60,7 @@ type DesktopStore = {
   focusDoom: () => void;
   focusStore: () => void;
   focusCalendar: () => void;
+  focusWeather: () => void;
   openAbout: () => void;
   closeAbout: () => void;
   openMusic: () => void;
@@ -71,6 +81,8 @@ type DesktopStore = {
   openDoom: () => void;
   closeStore: () => void;
   openStore: () => void;
+  openWeather: () => void;
+  closeWeather: () => void;
   closeAllApps: () => void;
   minimizeAbout: () => void;
   restoreAbout: () => void;
@@ -96,6 +108,20 @@ type DesktopStore = {
   closeCalendar: () => void;
   minimizeCalendar: () => void;
   restoreCalendar: () => void;
+  minimizeWeather: () => void;
+  restoreWeather: () => void;
+
+  filesOpen: boolean;
+  filesMinimized: boolean;
+  filesZIndex: number;
+
+  openFiles: () => void;
+  closeFiles: () => void;
+
+  minimizeFiles: () => void;
+  restoreFiles: () => void;
+
+  focusFiles: () => void;
 
   cameraOpen: boolean;
   cameraMinimized: boolean;
@@ -119,6 +145,19 @@ type DesktopStore = {
   setWallpaper: (wallpaper: WallpaperOption) => void;
   toggleSoundEffects: () => void;
   toggleReducedMotion: () => void;  
+
+  selectedMusic:MediaFile|null;
+  selectedVideo:MediaFile|null;
+  selectedImage:MediaFile|null;
+  selectedNote:MediaFile|null;
+
+  openMusicFile:(file:MediaFile)=>void;
+  openVideoFile:(file:MediaFile)=>void;
+  openImageFile:(file:MediaFile)=>void;
+  openNoteFile:(file:MediaFile)=>void;  
+
+  installedApps: string[];
+  toggleAppInstall: (appId: string) => void;
 };
 
 export const useDesktopStore = create<DesktopStore>((set) => ({
@@ -134,6 +173,8 @@ export const useDesktopStore = create<DesktopStore>((set) => ({
   doomOpen: false,
   storeOpen: false,
   calendarOpen: false,
+  weatherOpen: false,
+  filesOpen: false,
   aboutMinimized: false,
   musicMinimized: false,
   galleryMinimized: false,
@@ -146,10 +187,30 @@ export const useDesktopStore = create<DesktopStore>((set) => ({
   doomMinimized: false,
   storeMinimized: false,
   calendarMinimized: false,
+  weatherMinimized: false,
+  filesMinimized: false,
   theme: "ocean",
   wallpaper: "ocean",
   soundEffects: true,
   reducedMotion: false,
+  selectedMusic:null,
+  selectedVideo:null,
+  selectedImage:null,
+  selectedNote:null,  
+  installedApps: [
+    "about",
+    "music",
+    "gallery",
+    "settings",
+    "camera",
+    "shell",
+    "wiki",
+    "notes",
+    "calculator",
+    "doom",
+    "files",
+    "store",
+  ],
 
   setTheme: (theme) => set({ theme }),
   setWallpaper: (wallpaper) => set({ wallpaper }),
@@ -204,32 +265,21 @@ export const useDesktopStore = create<DesktopStore>((set) => ({
   minimizeCalendar: () => set({ calendarMinimized: true }),
   restoreCalendar: () => set((state) => ({ calendarMinimized: false, highestZIndex: state.highestZIndex + 1, calendarZIndex: state.highestZIndex + 1 })),
   focusCalendar: () => set((state) => ({ highestZIndex: state.highestZIndex + 1, calendarZIndex: state.highestZIndex + 1 })),
-  closeAllApps: () => set({
-    aboutOpen: false,
-    musicOpen: false,
-    galleryOpen: false,
-    settingsOpen: false,
-    cameraOpen: false,
-    shellOpen: false,
-    wikiOpen: false,
-    notesOpen: false,
-    calculatorOpen: false,
-    doomOpen: false,
-    storeOpen: false,
-    calendarOpen: false,
-    aboutMinimized: false,
-    musicMinimized: false,
-    galleryMinimized: false,
-    settingsMinimized: false,
-    cameraMinimized: false,
-    shellMinimized: false,
-    wikiMinimized: false,
-    notesMinimized: false,
-    calculatorMinimized: false,
-    doomMinimized: false,
-    storeMinimized: false,
-    calendarMinimized: false,
-  }),
+  openWeather: () => set((state) => ({ weatherOpen: true, weatherMinimized: false, highestZIndex: state.highestZIndex + 1, weatherZIndex: state.highestZIndex + 1 })),
+  closeWeather: () => set({ weatherOpen: false }),
+  minimizeWeather: () => set({ weatherMinimized: true }),
+  restoreWeather: () => set((state) => ({ weatherMinimized: false, highestZIndex: state.highestZIndex + 1, weatherZIndex: state.highestZIndex + 1 })),
+  focusWeather: () => set((state) => ({ highestZIndex: state.highestZIndex + 1, weatherZIndex: state.highestZIndex + 1 })),  
+  closeAllApps: () => {
+    set((state) => {
+      const s = useDesktopStore.getState();
+      s.closeAbout(); s.closeMusic(); s.closeGallery(); s.closeSettings();
+      s.closeCamera(); s.closeShell(); s.closeWiki(); s.closeNotes();
+      s.closeCalculator(); s.closeDoom(); s.closeStore(); s.closeCalendar();
+      s.closeWeather(); s.closeFiles();
+      return {};
+    });
+  },
   minimizeDoom: () => set({ doomMinimized: true }),
   restoreDoom: () => set((state) => ({ doomMinimized: false, highestZIndex: state.highestZIndex + 1, doomZIndex: state.highestZIndex + 1 })),
   focusDoom: () => set((state) => ({ highestZIndex: state.highestZIndex + 1, doomZIndex: state.highestZIndex + 1 })),
@@ -246,7 +296,10 @@ export const useDesktopStore = create<DesktopStore>((set) => ({
   calculatorZIndex: 109,
   doomZIndex: 110,
   storeZIndex: 111,
-  calendarZIndex: 112,
+  filesZIndex: 112,
+  calendarZIndex: 113,
+  weatherZIndex: 114,
+
 
   focusAbout: () => set((state) => ({
     highestZIndex: state.highestZIndex + 1,
@@ -284,4 +337,76 @@ export const useDesktopStore = create<DesktopStore>((set) => ({
     highestZIndex: state.highestZIndex + 1,
     calculatorZIndex: state.highestZIndex + 1,
   })),
+  focusFiles:()=>set((state)=>({
+    highestZIndex:state.highestZIndex+1,
+    filesZIndex:state.highestZIndex+1
+  })),
+
+  openFiles: () =>
+    set((state)=>({
+    filesOpen:true,
+    filesMinimized:false,
+    highestZIndex:state.highestZIndex+1,
+    filesZIndex:state.highestZIndex+1
+  })),
+
+  closeFiles:()=>set({
+    filesOpen:false
+  }),
+
+  minimizeFiles:()=>set({
+    filesMinimized:true
+  }),
+
+  restoreFiles:()=>set((state)=>({
+    filesMinimized:false,
+    highestZIndex:state.highestZIndex+1,
+    filesZIndex:state.highestZIndex+1
+  })),
+
+  openMusicFile:(file)=>
+  set((state)=>({
+    selectedMusic:file,
+    musicOpen:true,
+    musicMinimized:false,
+    highestZIndex:state.highestZIndex+1,
+    musicZIndex:state.highestZIndex+1
+  })),
+
+  openVideoFile:(file)=>
+  set((state)=>({
+    selectedVideo:file,
+    doomOpen:true,
+    doomMinimized:false,
+    highestZIndex:state.highestZIndex+1,
+    doomZIndex:state.highestZIndex+1
+  })),
+
+  openImageFile:(file)=>
+  set((state)=>({
+    selectedImage:file,
+    galleryOpen:true,
+    galleryMinimized:false,
+    highestZIndex:state.highestZIndex+1,
+    galleryZIndex:state.highestZIndex+1
+  })),
+
+  openNoteFile:(file)=>
+  set((state)=>({
+    selectedNote:file,
+    notesOpen:true,
+    notesMinimized:false,
+    highestZIndex:state.highestZIndex+1,
+    notesZIndex:state.highestZIndex+1
+  })),
+
+  toggleAppInstall: (appId) =>
+    set((state) => {
+      const isInstalled = state.installedApps.includes(appId);
+      if (isInstalled) {
+        return { installedApps: state.installedApps.filter((id) => id !== appId) };
+      } else {
+        return { installedApps: [...state.installedApps, appId] };
+      }
+    }),
 }));

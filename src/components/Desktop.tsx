@@ -14,6 +14,8 @@ import Calculator from "@/apps/Calculator";
 import Doom from "@/apps/Doom";
 import OceanStore from "@/apps/OceanStore";
 import Calendar from "@/apps/Calendar";
+import Weather from "@/apps/Weather";
+import Files from "@/apps/Files";
 
 import { useDesktopStore } from "@/store/desktopStore";
 import { useEffect, useState, type PointerEvent as ReactPointerEvent } from "react";
@@ -316,7 +318,7 @@ function TopBar({
         <span>OceanOS</span>
         <button
           type="button"
-          onClick={closeAllApps}
+          onClick={() => useDesktopStore.getState().closeAllApps()}
           className="pointer-events-auto rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[10px] font-medium uppercase tracking-[0.24em] text-white/80 transition hover:bg-white/20 hover:text-white"
         >
           Close all
@@ -397,6 +399,18 @@ export default function Desktop() {
   const [shutdownOverlayActive, setShutdownOverlayActive] = useState(false);
 
   useEffect(() => {
+    const handleWindowClick = () => {
+      if (contextMenu) {
+        setContextMenu(null);
+      }
+    };
+
+    window.addEventListener("click", handleWindowClick);
+
+    return () => window.removeEventListener("click", handleWindowClick);
+  }, [contextMenu]);
+
+  useEffect(() => {
     const updateTime = () => {
       const now = new Date();
       setCurrentTime(
@@ -470,6 +484,7 @@ export default function Desktop() {
   const doomOpen = useDesktopStore((state) => state.doomOpen);
   const storeOpen = useDesktopStore((state) => state.storeOpen);
   const calendarOpen = useDesktopStore((state) => state.calendarOpen);
+  const weatherOpen = useDesktopStore((state) => state.weatherOpen);
   const theme = useDesktopStore((state) => state.theme);
   const wallpaper = useDesktopStore((state) => state.wallpaper);
 
@@ -483,6 +498,7 @@ export default function Desktop() {
   const closeNotes = useDesktopStore((state) => state.closeNotes);
   const closeCalculator = useDesktopStore((state) => state.closeCalculator);
   const closeDoom = useDesktopStore((state) => state.closeDoom);
+  const closeWeather = useDesktopStore((state) => state.closeWeather);
 
   const closeStore = useDesktopStore((s) => s.closeStore);
   const minimizeStore = useDesktopStore((s) => s.minimizeStore);
@@ -500,6 +516,7 @@ export default function Desktop() {
   const doomMinimized = useDesktopStore((s) => s.doomMinimized);
   const storeMinimized = useDesktopStore((s) => s.storeMinimized);
   const calendarMinimized = useDesktopStore((s) => s.calendarMinimized);
+  const weatherMinimized = useDesktopStore((s) => s.weatherMinimized);
 
   const minimizeAbout = useDesktopStore((s) => s.minimizeAbout);
   const minimizeMusic = useDesktopStore((s) => s.minimizeMusic);
@@ -512,6 +529,7 @@ export default function Desktop() {
   const minimizeCalculator = useDesktopStore((s) => s.minimizeCalculator);
   const minimizeDoom = useDesktopStore((s) => s.minimizeDoom);
   const minimizeCalendar = useDesktopStore((s) => s.minimizeCalendar);
+  const minimizeWeather = useDesktopStore((s) => s.minimizeWeather);
 
   const aboutZIndex = useDesktopStore((s) => s.aboutZIndex);
   const musicZIndex = useDesktopStore((s) => s.musicZIndex);
@@ -525,6 +543,7 @@ export default function Desktop() {
   const doomZIndex = useDesktopStore((s) => s.doomZIndex);
   const storeZIndex = useDesktopStore((s) => s.storeZIndex);
   const calendarZIndex = useDesktopStore((s) => s.calendarZIndex);
+  const weatherZIndex = useDesktopStore((s) => s.weatherZIndex);
 
   const focusAbout = useDesktopStore((s) => s.focusAbout);
   const focusMusic = useDesktopStore((s) => s.focusMusic);
@@ -538,6 +557,7 @@ export default function Desktop() {
   const focusDoom = useDesktopStore((s) => s.focusDoom);
   const focusStore = useDesktopStore((s) => s.focusStore);
   const focusCalendar = useDesktopStore((s) => s.focusCalendar);
+  const focusWeather = useDesktopStore((s) => s.focusWeather);
 
   const openAbout = useDesktopStore((s) => s.openAbout);
   const openMusic = useDesktopStore((s) => s.openMusic);
@@ -551,6 +571,16 @@ export default function Desktop() {
   const openDoom = useDesktopStore((s) => s.openDoom);
   const openStore = useDesktopStore((s) => s.openStore);
   const openCalendar = useDesktopStore((s) => s.openCalendar);
+  const openWeather = useDesktopStore((s) => s.openWeather);
+
+  const filesOpen = useDesktopStore((s)=>s.filesOpen);
+  const filesMinimized = useDesktopStore((s)=>s.filesMinimized);
+  const filesZIndex = useDesktopStore((s)=>s.filesZIndex);
+
+  const openFiles = useDesktopStore((s)=>s.openFiles);
+  const closeFiles = useDesktopStore((s)=>s.closeFiles);
+  const minimizeFiles = useDesktopStore((s)=>s.minimizeFiles);
+  const focusFiles = useDesktopStore((s)=>s.focusFiles);  
 
   const appCatalog = [
     { id: "about", name: "About", keywords: ["about", "info", "profile"], onOpen: openAbout },
@@ -563,6 +593,10 @@ export default function Desktop() {
     { id: "notes", name: "Notes", keywords: ["notes", "text", "memo", "write"], onOpen: openNotes },
     { id: "calculator", name: "Calculator", keywords: ["calculator", "math", "sum"], onOpen: openCalculator },
     { id: "doom", name: "TikTok", keywords: ["tik", "tok", "doom", "video", "app"], onOpen: openDoom },
+    { id: "store", name: "App Store", keywords: ["store", "app", "install"], onOpen: openStore },
+    { id: "calendar", name: "Calendar", keywords: ["calendar", "schedule", "date"], onOpen: openCalendar },
+    { id: "weather", name: "Weather", keywords: ["weather", "forecast", "temperature"], onOpen: openWeather },
+    { id: "files", name: "Files", keywords: ["files", "finder", "documents"], onOpen: openFiles },
   ];
 
   const filteredApps = searchQuery.trim()
@@ -574,25 +608,35 @@ export default function Desktop() {
 
   const shouldShowResults = searchFocused && searchQuery.trim().length > 0;
 
-  const handleLaunchApp = (app: (typeof appCatalog)[number]) => {
+  const handleLaunchApp = (app: (typeof appCatalog)[number]): void => {
     app.onOpen();
     setSearchQuery("");
   };
 
-  const handleContextMenuAction = (action: "close-all" | "terminal" | "settings") => {
+  const handleContextMenuAction = (
+    action: "close-all" | "terminal" | "settings" | "files" | "store"
+  ): void => {
     setContextMenu(null);
 
-    if (action === "close-all") {
-      useDesktopStore.getState().closeAllApps();
-      return;
+    switch (action) {
+      case "close-all":
+        useDesktopStore.getState().closeAllApps();
+        break;
+      case "terminal":
+        useDesktopStore.getState().openShell();
+        break;
+      case "settings":
+        useDesktopStore.getState().openSettings();
+        break;
+      case "files":
+        useDesktopStore.getState().openFiles();
+        break;
+      case "store":
+        useDesktopStore.getState().openStore();
+        break;
+      default:
+        break;
     }
-
-    if (action === "terminal") {
-      useDesktopStore.getState().openShell();
-      return;
-    }
-
-    useDesktopStore.getState().openSettings();
   };
 
   const handleShutdown = () => {
@@ -669,24 +713,37 @@ export default function Desktop() {
           >
             <button
               type="button"
-              onClick={() => handleContextMenuAction("close-all")}
-              className="flex w-full items-center rounded-xl px-3 py-2 text-left text-sm text-white/80 transition hover:bg-white/10"
+              onClick={() => handleContextMenuAction("files")}
+              className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm text-white/80 transition hover:bg-white/10"
             >
-              Close all Applications
+              <span className="text-base">📁</span>
+              <span>Files</span>
             </button>
             <button
               type="button"
-              onClick={() => handleContextMenuAction("terminal")}
-              className="flex w-full items-center rounded-xl px-3 py-2 text-left text-sm text-white/80 transition hover:bg-white/10"
+              onClick={() => handleContextMenuAction("store")}
+              className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm text-white/80 transition hover:bg-white/10"
             >
-              Open Terminal
+              <span className="text-base">🛍️</span>
+              <span>App Store</span>
             </button>
+            <div className="my-1 h-px bg-white/15" />
+            <button
+              type="button"
+              onClick={() => handleContextMenuAction("close-all")}
+              className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm text-white/80 transition hover:bg-white/10"
+            >
+              <span className="text-base">❌</span>
+              <span>Close all Applications</span>
+            </button>
+            <div className="my-1 h-px bg-white/15" />
             <button
               type="button"
               onClick={() => handleContextMenuAction("settings")}
-              className="flex w-full items-center rounded-xl px-3 py-2 text-left text-sm text-white/80 transition hover:bg-white/10"
+              className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm text-white/80 transition hover:bg-white/10"
             >
-              Open Settings
+              <span className="text-base">⚙️</span>
+              <span>Personalize</span>
             </button>
           </div>
         ) : null}
@@ -697,7 +754,7 @@ export default function Desktop() {
               type="text"
               value={searchQuery}
               onFocus={() => setSearchFocused(true)}
-              onBlur={() => setTimeout(() => setSearchFocused(false), 120)}
+              onBlur={() => setTimeout(() => setSearchFocused(false), 200)}
               onChange={(event) => setSearchQuery(event.target.value)}
               onKeyDown={(event) => {
                 if (event.key === "Enter" && filteredApps.length > 0) {
@@ -885,18 +942,18 @@ export default function Desktop() {
         </Window>
 
         <Window
-          title="App Store"
-          dockId="store-dock"
-          isOpen={storeOpen}
-          isMinimized={storeMinimized}
-          onClose={closeStore}
-          onMinimize={minimizeStore}
-          zIndex={storeZIndex}
-          onFocus={focusStore}
-          width={750}
-          height={800}
+          title="Weather"
+          dockId="weather-dock"
+          isOpen={weatherOpen}
+          isMinimized={weatherMinimized}
+          onClose={closeWeather}
+          onMinimize={minimizeWeather}
+          zIndex={weatherZIndex}
+          onFocus={focusWeather}
+          width={400}
+          height={500}
         >
-          <OceanStore />
+          <Weather />
         </Window>
 
         <Window
@@ -912,7 +969,41 @@ export default function Desktop() {
           height={800}
         >
           <Calendar />
-        </Window>         
+        </Window>
+
+        {storeOpen && (
+          <Window
+            title="Ocean Store"
+            dockId="store-dock"
+            isOpen={storeOpen}
+            isMinimized={storeMinimized}
+            onClose={closeStore}
+            onMinimize={minimizeStore}
+            zIndex={storeZIndex}
+            onFocus={focusStore}
+            width={750}
+            height={800}
+          >
+            <OceanStore />
+          </Window>
+        )}
+
+        {filesOpen && (
+          <Window
+            title="Files"
+            dockId="files-dock"
+            isOpen={filesOpen}
+            isMinimized={filesMinimized}
+            onClose={closeFiles}
+            onMinimize={minimizeFiles}
+            zIndex={filesZIndex}
+            onFocus={focusFiles}
+            width={600}
+            height={450}
+          >
+            <Files />
+          </Window>
+        )}
 
         <Dock />
       </main>

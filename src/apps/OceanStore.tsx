@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useDesktopStore } from "@/store/desktopStore";
 
 type StoreApp = {
   id: string;
@@ -18,28 +19,32 @@ const initialApps: StoreApp[] = [
   { id: "settings", name: "Settings", description: "Customize your OceanOS experience.", category: "System", icon: "/icons/settings.png", installed: true },
   { id: "camera", name: "Camera", description: "Capture photos with the built-in camera.", category: "Media", icon: "/icons/camera.png", installed: true },
   { id: "shell", name: "Ocean Shell", description: "Run commands in a sleek terminal app.", category: "Developer", icon: "/icons/shell.png", installed: true },
-  { id: "browser", name: "Web Browser", description: "Open your favorite websites quickly.", category: "Productivity", icon: "/icons/wikipedia.png", installed: true },
+  { id: "wiki", name: "Web Browser", description: "Open your favorite websites quickly.", category: "Productivity", icon: "/icons/wikipedia.png", installed: true },
   { id: "notes", name: "Notes", description: "Write down ideas and reminders.", category: "Productivity", icon: "/icons/notes.png", installed: true },
   { id: "calculator", name: "Calculator", description: "Handle everyday math with ease.", category: "Utility", icon: "/icons/calculator.png", installed: true },
-  { id: "tiktok", name: "TikTok", description: "Watch short-form videos and discover creators.", category: "Entertainment", icon: "/icons/doom.png", installed: true },
+  { id: "doom", name: "TikTok", description: "Watch short-form videos and discover creators.", category: "Entertainment", icon: "/icons/doom.png", installed: true },
+  { id: "files", name: "Files", description: "Organize documents and downloads.", category: "Productivity", icon: "/icons/files.png", installed: true },
   { id: "weather", name: "Weather", description: "Check current conditions and forecasts.", category: "Utility", icon: "/icons/weather.png", installed: false },
-  { id: "files", name: "Files", description: "Organize documents and downloads.", category: "Productivity", icon: "/icons/files.png", installed: false },
   { id: "calendar", name: "Calendar", description: "Plan your day with a simple calendar app.", category: "Productivity", icon: "/icons/calendar.png", installed: false },
 ];
 
 export default function OceanStore() {
-  const [apps, setApps] = useState(initialApps);
+  const installedApps = useDesktopStore((s) => s.installedApps);
+  const toggleAppInstall = useDesktopStore((s) => s.toggleAppInstall);
   const [query, setQuery] = useState("");
+
+  const apps = initialApps.map((app) => ({
+    ...app,
+    installed: installedApps.includes(app.id),
+  }));
 
   const filteredApps = apps.filter((app) => {
     const text = `${app.name} ${app.description} ${app.category}`.toLowerCase();
     return text.includes(query.trim().toLowerCase());
   });
 
-  const toggleInstall = (appId: string) => {
-    setApps((current) =>
-      current.map((app) => (app.id === appId ? { ...app, installed: !app.installed } : app))
-    );
+  const handleToggleInstall = (appId: string) => {
+    toggleAppInstall(appId);
   };
 
   return (
@@ -93,7 +98,7 @@ export default function OceanStore() {
 
             <button
               type="button"
-              onClick={() => toggleInstall(app.id)}
+              onClick={() => handleToggleInstall(app.id)}
               className={`rounded-xl px-4 py-2 text-sm font-medium transition ${
                 app.installed
                   ? "border border-white/10 bg-white/10 text-white/70"
