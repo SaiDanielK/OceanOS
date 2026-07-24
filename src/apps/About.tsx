@@ -11,7 +11,7 @@ export default function About() {
         <div className="rounded-xl border border-white/10 bg-white/5 p-4">
           <h2 className="font-semibold">Version</h2>
           <p className="mt-1 text-sm text-white/70">
-            1.0.0 With New Features: Added a new ocean-themed background and improved the overall user interface for a more immersive experience.
+            2.0.0: Added a new ocean-themed background and improved the overall user interface for a more immersive experience.
           </p>
         </div>
 
