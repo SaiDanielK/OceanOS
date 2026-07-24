@@ -114,7 +114,7 @@ export default function Window({
 
       setBounds({
         x: 0,
-        y: 0,
+        y: 40,
         width: window.innerWidth,
         height: window.innerHeight,
       });
