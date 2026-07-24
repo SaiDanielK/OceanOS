@@ -105,6 +105,21 @@ export default function Notes() {
 
 	};
 
+	const deleteSuggestion = async (id: string) => {
+		const response = await fetch("/api/suggestions", {
+			method: "DELETE",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({ id }),
+		});
+
+		if (response.ok) {
+			const data = await response.json();
+			setSuggestions(data);
+		}
+	};
+
 
 
 	return (
@@ -240,18 +255,27 @@ export default function Notes() {
 						<li
 
 							key={suggestion.id}
-
 							className="
+								flex
+								items-center
+								justify-between
 								rounded
 								bg-white/70
 								px-2
 								py-1
 							"
-
 						>
-
-							{suggestion.text}
-
+							<span>{suggestion.text}</span>
+							<button
+								type="button"
+								onClick={() => deleteSuggestion(suggestion.id)}
+								className="
+									ml-2 rounded bg-red-500/80 px-2 py-0.5
+									text-xs text-white transition
+									hover:bg-red-500"
+							>
+								Delete
+							</button>
 						</li>
 
 					))}

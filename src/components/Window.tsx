@@ -1,8 +1,8 @@
 "use client";
 
-import { Rnd } from "react-rnd";
+import { Rnd, type Position } from "react-rnd";
 import type { ReactNode } from "react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type WindowProps = {
   children: ReactNode;
@@ -10,8 +10,6 @@ type WindowProps = {
   onClose: () => void;
   onMinimize: () => void;
   isMinimized: boolean;
-  x?: number;
-  y?: number;
   title: string;
   dockId: string;
   zIndex: number;
@@ -19,6 +17,8 @@ type WindowProps = {
   height?: number;
   windowId?: string;
   onFocus: () => void;
+  position: { x: number; y: number };
+  onPositionChange: (position: { x: number; y: number }) => void;
 };
 
 export default function Window({
@@ -27,8 +27,6 @@ export default function Window({
   onClose,
   onMinimize,
   isMinimized,
-  x,
-  y,
   title,
   dockId,
   zIndex,
@@ -36,6 +34,8 @@ export default function Window({
   height,
   windowId,
   onFocus,
+  position,
+  onPositionChange,
 }: WindowProps) {
   const windowRef = useRef<HTMLDivElement>(null);
 
@@ -44,18 +44,22 @@ export default function Window({
   const baseOffset = Math.max(0, zIndex - 100) * 50;
 
   const [bounds, setBounds] = useState({
-    x: x ?? baseOffset,
-    y: y ?? baseOffset,
+    x: position.x,
+    y: position.y,
     width: width ?? 500,
     height: height ?? 400,
   });
 
   const [previousBounds, setPreviousBounds] = useState({
-    x: x ?? baseOffset,
-    y: y ?? baseOffset,
+    x: position.x,
+    y: position.y,
     width: width ?? 500,
     height: height ?? 400,
   });
+
+  useEffect(() => {
+    setBounds(b => ({ ...b, x: position.x, y: position.y }));
+  }, [position.x, position.y]);
 
   if (!isOpen || isMinimized) return null;
 
@@ -136,22 +140,22 @@ export default function Window({
       bounds="window"
       dragHandleClassName="window-header"
       disableDragging={maximized}
+      onDrag={(_e, d) => {
+        onPositionChange({ x: d.x, y: d.y });
+      }}
       enableResizing={!maximized}
       onMouseDown={onFocus}
-      onDragStop={(e, d) => {
-        setBounds((prev) => ({
-          ...prev,
-          x: d.x,
-          y: d.y,
-        }));
+      onDragStop={(_e, d) => {
+        onPositionChange({ x: d.x, y: d.y });
       }}
-      onResizeStop={(e, direction, ref, delta, position) => {
+      onResizeStop={(_e, _direction, ref, _delta, position) => {
         setBounds({
           width: ref.offsetWidth,
           height: ref.offsetHeight,
           x: position.x,
           y: position.y,
         });
+        onPositionChange(position);
       }}
     >
       <div

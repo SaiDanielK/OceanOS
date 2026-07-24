@@ -23,6 +23,29 @@ import BootScreen from "@/components/BootScreen";
 import Wikipedia from "@/apps/Wikipedia";
 import BatteryGauge from "react-battery-gauge";
 
+const appMap: Record<string, {
+  component: React.ComponentType,
+  title: string,
+  width?: number,
+  height?: number
+}> = {
+  about: { component: About, title: "About", width: 430, height: 430 },
+  music: { component: Music, title: "Music", width: 420, height: 800 },
+  gallery: { component: Gallery, title: "Gallery", width: 405, height: 430 },
+  settings: { component: Settings, title: "Settings", width: 410, height: 450 },
+  camera: { component: Camera, title: "Camera", width: 400, height: 438 },
+  shell: { component: OceanShell, title: "Ocean Shell", width: 400, height: 420 },
+  wiki: { component: Wikipedia, title: "Web Browser", width: 430, height: 479 },
+  notes: { component: Notes, title: "Notes", width: 430, height: 457 },
+  calculator: { component: Calculator, title: "Calculator", width: 429, height: 575 },
+  doom: { component: Doom, title: "TikTok", width: 470, height: 718 },
+  store: { component: OceanStore, title: "Ocean Store", width: 750, height: 800 },
+  calendar: { component: Calendar, title: "Calendar", width: 750, height: 800 },
+  weather: { component: Weather, title: "Weather", width: 400, height: 500 },
+  files: { component: Files, title: "Files", width: 600, height: 450 },
+};
+
+
 function ClockWidget({
   currentTime,
   currentDate,
@@ -398,6 +421,11 @@ export default function Desktop() {
   const [shutdownOverlayVisible, setShutdownOverlayVisible] = useState(false);
   const [shutdownOverlayActive, setShutdownOverlayActive] = useState(false);
 
+  const apps = useDesktopStore((state) => state.apps);
+  const { openApp, closeApp, focusApp, minimizeApp, updateAppPosition } = useDesktopStore();
+  const wallpaper = useDesktopStore((state) => state.wallpaper);
+  const installedApps = useDesktopStore((state) => state.installedApps);
+
   useEffect(() => {
     const handleWindowClick = () => {
       if (contextMenu) {
@@ -472,137 +500,29 @@ export default function Desktop() {
     });
   };
 
-  const aboutOpen = useDesktopStore((state) => state.aboutOpen);
-  const musicOpen = useDesktopStore((state) => state.musicOpen);
-  const galleryOpen = useDesktopStore((state) => state.galleryOpen);
-  const settingsOpen = useDesktopStore((state) => state.settingsOpen);
-  const cameraOpen = useDesktopStore((state) => state.cameraOpen);
-  const shellOpen = useDesktopStore((state) => state.shellOpen);
-  const wikiOpen = useDesktopStore((state) => state.wikiOpen);
-  const notesOpen = useDesktopStore((state) => state.notesOpen);
-  const calculatorOpen = useDesktopStore((state) => state.calculatorOpen);
-  const doomOpen = useDesktopStore((state) => state.doomOpen);
-  const storeOpen = useDesktopStore((state) => state.storeOpen);
-  const calendarOpen = useDesktopStore((state) => state.calendarOpen);
-  const weatherOpen = useDesktopStore((state) => state.weatherOpen);
-  const theme = useDesktopStore((state) => state.theme);
-  const wallpaper = useDesktopStore((state) => state.wallpaper);
-
-  const closeAbout = useDesktopStore((state) => state.closeAbout);
-  const closeMusic = useDesktopStore((state) => state.closeMusic);
-  const closeGallery = useDesktopStore((state) => state.closeGallery);
-  const closeSettings = useDesktopStore((state) => state.closeSettings);
-  const closeCamera = useDesktopStore((state) => state.closeCamera);
-  const closeShell = useDesktopStore((state) => state.closeShell);
-  const closeWiki = useDesktopStore((state) => state.closeWiki);
-  const closeNotes = useDesktopStore((state) => state.closeNotes);
-  const closeCalculator = useDesktopStore((state) => state.closeCalculator);
-  const closeDoom = useDesktopStore((state) => state.closeDoom);
-  const closeWeather = useDesktopStore((state) => state.closeWeather);
-
-  const closeStore = useDesktopStore((s) => s.closeStore);
-  const minimizeStore = useDesktopStore((s) => s.minimizeStore);
-  const closeCalendar = useDesktopStore((s) => s.closeCalendar);
-
-  const aboutMinimized = useDesktopStore((s) => s.aboutMinimized);
-  const musicMinimized = useDesktopStore((s) => s.musicMinimized);
-  const galleryMinimized = useDesktopStore((s) => s.galleryMinimized);
-  const settingsMinimized = useDesktopStore((s) => s.settingsMinimized);
-  const cameraMinimized = useDesktopStore((s) => s.cameraMinimized);
-  const shellMinimized = useDesktopStore((s) => s.shellMinimized);
-  const wikiMinimized = useDesktopStore((s) => s.wikiMinimized);
-  const notesMinimized = useDesktopStore((s) => s.notesMinimized);
-  const calculatorMinimized = useDesktopStore((s) => s.calculatorMinimized);
-  const doomMinimized = useDesktopStore((s) => s.doomMinimized);
-  const storeMinimized = useDesktopStore((s) => s.storeMinimized);
-  const calendarMinimized = useDesktopStore((s) => s.calendarMinimized);
-  const weatherMinimized = useDesktopStore((s) => s.weatherMinimized);
-
-  const minimizeAbout = useDesktopStore((s) => s.minimizeAbout);
-  const minimizeMusic = useDesktopStore((s) => s.minimizeMusic);
-  const minimizeGallery = useDesktopStore((s) => s.minimizeGallery);
-  const minimizeSettings = useDesktopStore((s) => s.minimizeSettings);
-  const minimizeCamera = useDesktopStore((s) => s.minimizeCamera);
-  const minimizeShell = useDesktopStore((s) => s.minimizeShell);
-  const minimizeWiki = useDesktopStore((s) => s.minimizeWiki);
-  const minimizeNotes = useDesktopStore((s) => s.minimizeNotes);
-  const minimizeCalculator = useDesktopStore((s) => s.minimizeCalculator);
-  const minimizeDoom = useDesktopStore((s) => s.minimizeDoom);
-  const minimizeCalendar = useDesktopStore((s) => s.minimizeCalendar);
-  const minimizeWeather = useDesktopStore((s) => s.minimizeWeather);
-
-  const aboutZIndex = useDesktopStore((s) => s.aboutZIndex);
-  const musicZIndex = useDesktopStore((s) => s.musicZIndex);
-  const galleryZIndex = useDesktopStore((s) => s.galleryZIndex);
-  const settingsZIndex = useDesktopStore((s) => s.settingsZIndex);
-  const cameraZIndex = useDesktopStore((s) => s.cameraZIndex);
-  const shellZIndex = useDesktopStore((s) => s.shellZIndex);
-  const wikiZIndex = useDesktopStore((s) => s.wikiZIndex);
-  const notesZIndex = useDesktopStore((s) => s.notesZIndex);
-  const calculatorZIndex = useDesktopStore((s) => s.calculatorZIndex);
-  const doomZIndex = useDesktopStore((s) => s.doomZIndex);
-  const storeZIndex = useDesktopStore((s) => s.storeZIndex);
-  const calendarZIndex = useDesktopStore((s) => s.calendarZIndex);
-  const weatherZIndex = useDesktopStore((s) => s.weatherZIndex);
-
-  const focusAbout = useDesktopStore((s) => s.focusAbout);
-  const focusMusic = useDesktopStore((s) => s.focusMusic);
-  const focusGallery = useDesktopStore((s) => s.focusGallery);
-  const focusSettings = useDesktopStore((s) => s.focusSettings);
-  const focusCamera = useDesktopStore((s) => s.focusCamera);
-  const focusShell = useDesktopStore((s) => s.focusShell);
-  const focusWiki = useDesktopStore((s) => s.focusWiki);
-  const focusNotes = useDesktopStore((s) => s.focusNotes);
-  const focusCalculator = useDesktopStore((s) => s.focusCalculator);
-  const focusDoom = useDesktopStore((s) => s.focusDoom);
-  const focusStore = useDesktopStore((s) => s.focusStore);
-  const focusCalendar = useDesktopStore((s) => s.focusCalendar);
-  const focusWeather = useDesktopStore((s) => s.focusWeather);
-
-  const openAbout = useDesktopStore((s) => s.openAbout);
-  const openMusic = useDesktopStore((s) => s.openMusic);
-  const openGallery = useDesktopStore((s) => s.openGallery);
-  const openSettings = useDesktopStore((s) => s.openSettings);
-  const openCamera = useDesktopStore((s) => s.openCamera);
-  const openShell = useDesktopStore((s) => s.openShell);
-  const openWiki = useDesktopStore((s) => s.openWiki);
-  const openNotes = useDesktopStore((s) => s.openNotes);
-  const openCalculator = useDesktopStore((s) => s.openCalculator);
-  const openDoom = useDesktopStore((s) => s.openDoom);
-  const openStore = useDesktopStore((s) => s.openStore);
-  const openCalendar = useDesktopStore((s) => s.openCalendar);
-  const openWeather = useDesktopStore((s) => s.openWeather);
-
-  const filesOpen = useDesktopStore((s)=>s.filesOpen);
-  const filesMinimized = useDesktopStore((s)=>s.filesMinimized);
-  const filesZIndex = useDesktopStore((s)=>s.filesZIndex);
-
-  const openFiles = useDesktopStore((s)=>s.openFiles);
-  const closeFiles = useDesktopStore((s)=>s.closeFiles);
-  const minimizeFiles = useDesktopStore((s)=>s.minimizeFiles);
-  const focusFiles = useDesktopStore((s)=>s.focusFiles);  
-
   const appCatalog = [
-    { id: "about", name: "About", keywords: ["about", "info", "profile"], onOpen: openAbout },
-    { id: "music", name: "Music", keywords: ["music", "audio", "player", "songs"], onOpen: openMusic },
-    { id: "gallery", name: "Gallery", keywords: ["gallery", "photos", "images", "pictures"], onOpen: openGallery },
-    { id: "settings", name: "Settings", keywords: ["settings", "config", "preferences"], onOpen: openSettings },
-    { id: "camera", name: "Camera", keywords: ["camera", "photo", "cam"], onOpen: openCamera },
-    { id: "shell", name: "Ocean Shell", keywords: ["shell", "terminal", "command", "console"], onOpen: openShell },
-    { id: "browser", name: "Web Browser", keywords: ["browser", "web", "wiki", "internet"], onOpen: openWiki },
-    { id: "notes", name: "Notes", keywords: ["notes", "text", "memo", "write"], onOpen: openNotes },
-    { id: "calculator", name: "Calculator", keywords: ["calculator", "math", "sum"], onOpen: openCalculator },
-    { id: "doom", name: "TikTok", keywords: ["tik", "tok", "doom", "video", "app"], onOpen: openDoom },
-    { id: "store", name: "App Store", keywords: ["store", "app", "install"], onOpen: openStore },
-    { id: "calendar", name: "Calendar", keywords: ["calendar", "schedule", "date"], onOpen: openCalendar },
-    { id: "weather", name: "Weather", keywords: ["weather", "forecast", "temperature"], onOpen: openWeather },
-    { id: "files", name: "Files", keywords: ["files", "finder", "documents"], onOpen: openFiles },
+    { id: "about", name: "About", keywords: ["about", "info", "profile"], onOpen: () => openApp('about') },
+    { id: "music", name: "Music", keywords: ["music", "audio", "player", "songs"], onOpen: () => openApp('music') },
+    { id: "gallery", name: "Gallery", keywords: ["gallery", "photos", "images", "pictures"], onOpen: () => openApp('gallery') },
+    { id: "settings", name: "Settings", keywords: ["settings", "config", "preferences"], onOpen: () => openApp('settings') },
+    { id: "camera", name: "Camera", keywords: ["camera", "photo", "cam"], onOpen: () => openApp('camera') },
+    { id: "shell", name: "Ocean Shell", keywords: ["shell", "terminal", "command", "console"], onOpen: () => openApp('shell') },
+    { id: "wiki", name: "Web Browser", keywords: ["browser", "web", "wiki", "internet"], onOpen: () => openApp('wiki') },
+    { id: "notes", name: "Notes", keywords: ["notes", "text", "memo", "write"], onOpen: () => openApp('notes') },
+    { id: "calculator", name: "Calculator", keywords: ["calculator", "math", "sum"], onOpen: () => openApp('calculator') },
+    { id: "doom", name: "TikTok", keywords: ["tik", "tok", "doom", "video", "app"], onOpen: () => openApp('doom') },
+    { id: "store", name: "App Store", keywords: ["store", "app", "install"], onOpen: () => openApp('store') },
+    { id: "calendar", name: "Calendar", keywords: ["calendar", "schedule", "date"], onOpen: () => openApp('calendar') },
+    { id: "weather", name: "Weather", keywords: ["weather", "forecast", "temperature"], onOpen: () => openApp('weather') },
+    { id: "files", name: "Files", keywords: ["files", "finder", "documents"], onOpen: () => openApp('files') },
   ];
 
   const filteredApps = searchQuery.trim()
     ? appCatalog.filter((app) => {
-        const haystack = `${app.name} ${app.keywords.join(" ")}`.toLowerCase();
-        return haystack.includes(searchQuery.trim().toLowerCase());
+        const haystack = `${app.name} ${app.keywords.join(" ")}`.toLowerCase();        
+        return (
+          installedApps.includes(app.id) && haystack.includes(searchQuery.trim().toLowerCase())
+        );
       })
     : appCatalog;
 
@@ -623,16 +543,16 @@ export default function Desktop() {
         useDesktopStore.getState().closeAllApps();
         break;
       case "terminal":
-        useDesktopStore.getState().openShell();
+        useDesktopStore.getState().openApp('shell');
         break;
       case "settings":
-        useDesktopStore.getState().openSettings();
+        useDesktopStore.getState().openApp('settings');
         break;
       case "files":
-        useDesktopStore.getState().openFiles();
+        useDesktopStore.getState().openApp('files');
         break;
       case "store":
-        useDesktopStore.getState().openStore();
+        useDesktopStore.getState().openApp('store');
         break;
       default:
         break;
@@ -655,6 +575,7 @@ export default function Desktop() {
     sunset: "/themes/sunset.jpg",
   };
 
+  const theme = useDesktopStore((state) => state.theme);
   const themeClasses: Record<typeof theme, string> = {
     ocean: "bg-gradient-to-b from-blue-500 to-blue-700",
     midnight: "bg-gradient-to-b from-gray-900 to-gray-800",
@@ -666,7 +587,7 @@ export default function Desktop() {
       {booting && <BootScreen onFinish={() => setBooting(false)} />}
 
       <main
-        className={`w-screen h-screen bg-cover bg-center relative overflow-hidden ${themeClasses[theme]}`}
+        className={`w-screen h-screen bg-cover bg-center relative overflow-hidden ${theme ? themeClasses[theme] : ''}`}
         style={{
           backgroundImage: `url('${wallpaperMap[wallpaper]}')`,
         }}
@@ -790,220 +711,29 @@ export default function Desktop() {
           </div>
         </div>
 
-        <Window
-          title="About"
-          dockId="about-dock"
-          isOpen={aboutOpen}
-          isMinimized={aboutMinimized}
-          onClose={closeAbout}
-          onMinimize={minimizeAbout}
-          zIndex={aboutZIndex}
-          onFocus={focusAbout}
-          width={430}
-          height={430}
-        >
-          <About />
-        </Window>
-
-        <Window
-          title="Music"
-          dockId="music-dock"
-          isOpen={musicOpen}
-          isMinimized={musicMinimized}
-          onClose={closeMusic}
-          onMinimize={minimizeMusic}
-          zIndex={musicZIndex}
-          onFocus={focusMusic}
-          width={420}
-          height={800}
-        >
-          <Music />
-        </Window>
-
-        <Window
-          title="Gallery"
-          windowId="gallery-window"
-          dockId="gallery-dock"
-          isOpen={galleryOpen}
-          isMinimized={galleryMinimized}
-          onClose={closeGallery}
-          onMinimize={minimizeGallery}
-          zIndex={galleryZIndex}
-          onFocus={focusGallery}
-          width={405}
-          height={430}
-        >
-          <Gallery />
-        </Window>
-
-        <Window
-          title="Camera"
-          dockId="camera-dock"
-          isOpen={cameraOpen}
-          isMinimized={cameraMinimized}
-          onClose={closeCamera}
-          onMinimize={minimizeCamera}
-          zIndex={cameraZIndex}
-          onFocus={focusCamera}
-          width={400}
-          height={438}
-        >
-          <Camera />
-        </Window>
-
-        <Window
-          title="Settings"
-          dockId="settings-dock"
-          isOpen={settingsOpen}
-          isMinimized={settingsMinimized}
-          onClose={closeSettings}
-          onMinimize={minimizeSettings}
-          zIndex={settingsZIndex}
-          onFocus={focusSettings}
-          width={410}
-          height={450}
-        >
-          <Settings />
-        </Window>
-
-        <Window
-          title="Ocean Shell"
-          dockId="shell-dock"
-          isOpen={shellOpen}
-          isMinimized={shellMinimized}
-          onClose={closeShell}
-          onMinimize={minimizeShell}
-          zIndex={shellZIndex}
-          onFocus={focusShell}
-          width={400}
-          height={420}
-        >
-          <OceanShell />
-        </Window>
-
-        <Window
-          title="Web Browser"
-          dockId="wiki-dock"
-          isOpen={wikiOpen}
-          isMinimized={wikiMinimized}
-          onClose={closeWiki}
-          onMinimize={minimizeWiki}
-          zIndex={wikiZIndex}
-          onFocus={focusWiki}
-          width={430}
-          height={479}
-        >
-          <Wikipedia />
-        </Window>
-
-        <Window
-          title="Notes"
-          dockId="notes-dock"
-          isOpen={notesOpen}
-          isMinimized={notesMinimized}
-          onClose={closeNotes}
-          onMinimize={minimizeNotes}
-          zIndex={notesZIndex}
-          onFocus={focusNotes}
-          width={430}
-          height={457}
-        >
-          <Notes />
-        </Window>
-
-        <Window
-          title="Calculator"
-          dockId="calculator-dock"
-          isOpen={calculatorOpen}
-          isMinimized={calculatorMinimized}
-          onClose={closeCalculator}
-          onMinimize={minimizeCalculator}
-          zIndex={calculatorZIndex}
-          onFocus={focusCalculator}
-          width={429}
-          height={575}
-        >
-          <Calculator />
-        </Window>
-
-        <Window
-          title="TikTok"
-          dockId="doom-dock"
-          isOpen={doomOpen}
-          isMinimized={doomMinimized}
-          onClose={closeDoom}
-          onMinimize={minimizeDoom}
-          zIndex={doomZIndex}
-          onFocus={focusDoom}
-          width={470}
-          height={718}
-        >
-          <Doom />
-        </Window>
-
-        <Window
-          title="Weather"
-          dockId="weather-dock"
-          isOpen={weatherOpen}
-          isMinimized={weatherMinimized}
-          onClose={closeWeather}
-          onMinimize={minimizeWeather}
-          zIndex={weatherZIndex}
-          onFocus={focusWeather}
-          width={400}
-          height={500}
-        >
-          <Weather />
-        </Window>
-
-        <Window
-          title="Calendar"
-          dockId="calendar-dock"
-          isOpen={calendarOpen}
-          isMinimized={calendarMinimized}
-          onClose={closeCalendar}
-          onMinimize={minimizeCalendar}
-          zIndex={calendarZIndex}
-          onFocus={focusCalendar}
-          width={750}
-          height={800}
-        >
-          <Calendar />
-        </Window>
-
-        {storeOpen && (
-          <Window
-            title="Ocean Store"
-            dockId="store-dock"
-            isOpen={storeOpen}
-            isMinimized={storeMinimized}
-            onClose={closeStore}
-            onMinimize={minimizeStore}
-            zIndex={storeZIndex}
-            onFocus={focusStore}
-            width={750}
-            height={800}
-          >
-            <OceanStore />
-          </Window>
-        )}
-
-        {filesOpen && (
-          <Window
-            title="Files"
-            dockId="files-dock"
-            isOpen={filesOpen}
-            isMinimized={filesMinimized}
-            onClose={closeFiles}
-            onMinimize={minimizeFiles}
-            zIndex={filesZIndex}
-            onFocus={focusFiles}
-            width={600}
-            height={450}
-          >
-            <Files />
-          </Window>
-        )}
+        {apps.map((app) => {
+          const App = appMap[app.id]?.component;
+          if (!App) return null;
+          return (
+            <Window
+              key={app.id}
+              title={appMap[app.id].title}
+              dockId={`${app.id}-dock`}
+              isOpen={app.isOpen}
+              isMinimized={app.isMinimized}
+              onClose={() => closeApp(app.id)}
+              onMinimize={() => minimizeApp(app.id)}
+              zIndex={app.zIndex}
+              onFocus={() => focusApp(app.id)}
+              width={appMap[app.id].width}
+              height={appMap[app.id].height}
+              position={app.position}
+              onPositionChange={(newPos) => updateAppPosition(app.id, newPos)}
+            >
+              <App />
+            </Window>
+          );
+        })}
 
         <Dock />
       </main>

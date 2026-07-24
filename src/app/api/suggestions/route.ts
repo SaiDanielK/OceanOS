@@ -37,3 +37,17 @@ export async function POST(request: Request) {
   await writeSuggestions(next);
   return NextResponse.json(next);
 }
+
+export async function DELETE(request: Request) {
+  const { id } = await request.json();
+
+  if (!id) {
+    return NextResponse.json({ error: "ID is required" }, { status: 400 });
+  }
+
+  const suggestions = await readSuggestions();
+  const next = suggestions.filter((suggestion: { id: string }) => suggestion.id !== id);
+
+  await writeSuggestions(next);
+  return NextResponse.json(next);
+}

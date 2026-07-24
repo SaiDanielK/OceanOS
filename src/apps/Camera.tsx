@@ -8,10 +8,9 @@ export default function Camera() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  const addPhoto = usePhotoStore((state) => state.addPhoto);
-
-  const galleryOpen = useDesktopStore((state) => state.galleryOpen);
-  const openGallery = useDesktopStore((state) => state.openGallery);
+  const addPhoto = usePhotoStore(state => state.addPhoto);
+  const galleryOpen = useDesktopStore(state => state.apps.find(app => app.id === 'gallery')?.isOpen);
+  const openApp = useDesktopStore(state => state.openApp);
 
   const [thumbnail, setThumbnail] = useState<string | null>(null);
   const thumbnailRef = useRef<HTMLImageElement>(null);
@@ -68,7 +67,7 @@ export default function Camera() {
     setThumbnail(image);
 
     if (!galleryOpen) {
-      openGallery();
+      openApp('gallery');
     }
     setTimeout(() => {
       const thumb = thumbnailRef.current;
