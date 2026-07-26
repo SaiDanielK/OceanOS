@@ -212,7 +212,7 @@ export default function Window({
           </div>
         </div>
 
-        <div className="h-[calc(100%-48px)] overflow-hidden">
+        <div id={`${windowId}-content`} className="h-[calc(100%-48px)] overflow-hidden">
           {children}
         </div>
       </div>

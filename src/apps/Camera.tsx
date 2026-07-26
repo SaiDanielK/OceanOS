@@ -1,13 +1,22 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { usePhotoStore } from "@/store/photoStore";
 import { useDesktopStore } from "@/store/desktopStore";
+import { images as defaultImages } from "./Gallery";
+
+type GalleryPhoto = {
+	id?: number;
+	title: string;
+	src: string;
+	camera: boolean;
+};
 
 export default function Camera() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
+  const photos = usePhotoStore(state => state.photos);
   const addPhoto = usePhotoStore(state => state.addPhoto);
   const galleryOpen = useDesktopStore(state => state.apps.find(app => app.id === 'gallery')?.isOpen);
   const openApp = useDesktopStore(state => state.openApp);
@@ -16,6 +25,16 @@ export default function Camera() {
   const thumbnailRef = useRef<HTMLImageElement>(null);
 
   const [flash, setFlash] = useState(false);
+  const [isGalleryViewOpen, setIsGalleryViewOpen] = useState(false);
+  const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
+
+  const allPhotos: GalleryPhoto[] = useMemo(() => [
+    ...defaultImages,
+    ...photos.map((photo) => ({
+      ...photo,
+      camera: true,
+    })),
+  ], [photos]);
 
   useEffect(() => {
     let stream: MediaStream | null = null;
@@ -117,7 +136,8 @@ export default function Camera() {
       };
 
     }, galleryOpen ? 50 : 200);
-  };        
+  };
+
 
   return (
     <div className="relative h-full flex flex-col bg-black overflow-hidden">
@@ -135,12 +155,19 @@ export default function Camera() {
         `}
       />
 
-      {thumbnail && (
-        <img
-          ref={thumbnailRef}
-          src={thumbnail}
-          className="absolute bottom-32 right-6 w-36 rounded-xl shadow-2xl border border-white z-30 pointer-events-none"
-        />
+      {allPhotos.length > 0 && (
+        <button
+          onClick={() => {
+            setCurrentPhotoIndex(allPhotos.length - 1);
+            setIsGalleryViewOpen(true);
+          }}
+          className="absolute bottom-2.5 left-2.5 w-20 h-20 rounded-full shadow-2xl border-2 border-white z-10 overflow-hidden group"
+        >
+          <img
+            src={thumbnail || allPhotos[allPhotos.length - 1].src}
+            className="w-full h-full object-cover transition-transform group-hover:scale-110"
+          />
+        </button>
       )}
 
       <video
@@ -174,6 +201,50 @@ export default function Camera() {
         />
 
       </div>
+
+      {isGalleryViewOpen && (
+        <div className="absolute inset-0 z-40 bg-black flex flex-col text-white">
+          <div className="flex-1 flex items-center justify-center p-4 relative">
+            <img
+              src={allPhotos[currentPhotoIndex].src}
+              alt={allPhotos[currentPhotoIndex].title}
+              className="max-w-full max-h-full object-contain select-none"
+            />
+          </div>
+
+          <div className="h-28 flex items-center justify-between px-6 border-t border-white/10">
+            <button
+              onClick={() => setCurrentPhotoIndex(prev => (prev - 1 + allPhotos.length) % allPhotos.length)}
+              className="rounded-full border border-white/10 bg-white/10 px-4 py-2 backdrop-blur-xl hover:bg-white/20"
+            >
+              ← Prev
+            </button>
+
+            <button
+              onClick={() => setIsGalleryViewOpen(false)}
+              className="rounded-full border border-white/10 bg-white/10 px-4 py-2 backdrop-blur-xl hover:bg-white/20"
+            >
+              Done
+            </button>
+
+            <button
+              onClick={() => setCurrentPhotoIndex(prev => (prev + 1) % allPhotos.length)}
+              className="rounded-full border border-white/10 bg-white/10 px-4 py-2 backdrop-blur-xl hover:bg-white/20"
+            >
+              Next →
+            </button>
+          </div>
+        </div>
+      )}
+
+      {thumbnail && (
+        <img
+          ref={thumbnailRef}
+          src={thumbnail}
+          alt=""
+          className="absolute bottom-6 left-6 w-20 h-20 rounded-full shadow-2xl border-2 border-white z-30 pointer-events-none"
+        />
+      )}
 
     </div>
   );

@@ -17,6 +17,7 @@ import Calendar from "@/apps/Calendar";
 import Weather from "@/apps/Weather";
 import Files from "@/apps/Files";
 
+import Guide from "@/components/Guide";
 import { useDesktopStore } from "@/store/desktopStore";
 import { useEffect, useState, type PointerEvent as ReactPointerEvent } from "react";
 import BootScreen from "@/components/BootScreen";
@@ -29,14 +30,14 @@ const appMap: Record<string, {
   width?: number,
   height?: number
 }> = {
-  about: { component: About, title: "About", width: 430, height: 430 },
-  music: { component: Music, title: "Music", width: 420, height: 800 },
+  about: { component: About, title: "About", width: 460, height: 430 },
+  music: { component: Music, title: "Music", width: 420, height: 790 },
   gallery: { component: Gallery, title: "Gallery", width: 405, height: 430 },
-  settings: { component: Settings, title: "Settings", width: 410, height: 450 },
-  camera: { component: Camera, title: "Camera", width: 400, height: 438 },
+  settings: { component: Settings, title: "Settings", width: 500, height: 600 },
+  camera: { component: Camera, title: "Camera", width: 420, height: 455 },
   shell: { component: OceanShell, title: "Ocean Shell", width: 400, height: 420 },
   wiki: { component: Wikipedia, title: "Web Browser", width: 430, height: 479 },
-  notes: { component: Notes, title: "Notes", width: 430, height: 457 },
+  notes: { component: Notes, title: "Notes", width: 800, height: 600 },
   calculator: { component: Calculator, title: "Calculator", width: 429, height: 575 },
   doom: { component: Doom, title: "TikTok", width: 470, height: 718 },
   store: { component: OceanStore, title: "Ocean Store", width: 750, height: 800 },
@@ -49,13 +50,9 @@ const appMap: Record<string, {
 function ClockWidget({
   currentTime,
   currentDate,
-  position,
-  onPointerDown,
 }: {
   currentTime: string;
   currentDate: string;
-  position: { right: number; top: number };
-  onPointerDown: (event: ReactPointerEvent<HTMLDivElement>) => void;
 }) {
   const [now, setNow] = useState(() => new Date());
 
@@ -66,6 +63,43 @@ function ClockWidget({
 
     return () => window.clearInterval(interval);
   }, []);
+
+  const [position, setPosition] = useState({ right: 16, top: 56 });
+  const [dragState, setDragState] = useState<{
+    startX: number;
+    startY: number;
+    startRight: number;
+    startTop: number;
+  } | null>(null);
+
+  useEffect(() => {
+    if (!dragState) return;
+
+    const handlePointerMove = (event: PointerEvent) => {
+      const maxRight = Math.max(16, window.innerWidth - 260);
+      const maxTop = Math.max(56, window.innerHeight - 140);
+      const nextRight = Math.min(
+        maxRight,
+        Math.max(16, dragState.startRight - (event.clientX - dragState.startX))
+      );
+      const nextTop = Math.min(
+        maxTop,
+        Math.max(56, dragState.startTop + (event.clientY - dragState.startY))
+      );
+
+      setPosition({ right: nextRight, top: nextTop });
+    };
+
+    const handlePointerUp = () => setDragState(null);
+
+    window.addEventListener("pointermove", handlePointerMove);
+    window.addEventListener("pointerup", handlePointerUp);
+
+    return () => {
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerup", handlePointerUp);
+    };
+  }, [dragState]);
 
   const seconds = now.getSeconds();
   const minutes = now.getMinutes();
@@ -98,7 +132,15 @@ function ClockWidget({
     <div
       className="absolute z-30 cursor-grab rounded-2xl border border-white/15 bg-slate-950/65 px-4 py-2 shadow-[0_20px_45px_rgba(0,0,0,0.35)] backdrop-blur-xl active:cursor-grabbing"
       style={{ right: `${position.right}px`, top: `${position.top}px`, minWidth: "220px" }}
-      onPointerDown={onPointerDown}
+      onPointerDown={(event) => {
+        event.preventDefault();
+        setDragState({
+          startX: event.clientX,
+          startY: event.clientY,
+          startRight: position.right,
+          startTop: position.top,
+        });
+      }}
     >
       <div className="text-[10px] uppercase tracking-[0.34em] text-white/55">Local time</div>
       <div className="mt-1 text-3xl font-semibold tracking-[0.02em] text-white">
@@ -408,13 +450,6 @@ export default function Desktop() {
   const [booting, setBooting] = useState(true);
   const [currentTime, setCurrentTime] = useState("");
   const [currentDate, setCurrentDate] = useState("");
-  const [widgetPosition, setWidgetPosition] = useState({ right: 16, top: 56 });
-  const [dragState, setDragState] = useState<{
-    startX: number;
-    startY: number;
-    startRight: number;
-    startTop: number;
-  } | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchFocused, setSearchFocused] = useState(false);
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number } | null>(null);
@@ -460,45 +495,6 @@ export default function Desktop() {
     const interval = window.setInterval(updateTime, 1000);
     return () => window.clearInterval(interval);
   }, []);
-
-  useEffect(() => {
-    if (!dragState) return;
-
-    const handlePointerMove = (event: PointerEvent) => {
-      const maxRight = Math.max(16, window.innerWidth - 260);
-      const maxTop = Math.max(56, window.innerHeight - 140);
-      const nextRight = Math.min(
-        maxRight,
-        Math.max(16, dragState.startRight - (event.clientX - dragState.startX))
-      );
-      const nextTop = Math.min(
-        maxTop,
-        Math.max(56, dragState.startTop + (event.clientY - dragState.startY))
-      );
-
-      setWidgetPosition({ right: nextRight, top: nextTop });
-    };
-
-    const handlePointerUp = () => setDragState(null);
-
-    window.addEventListener("pointermove", handlePointerMove);
-    window.addEventListener("pointerup", handlePointerUp);
-
-    return () => {
-      window.removeEventListener("pointermove", handlePointerMove);
-      window.removeEventListener("pointerup", handlePointerUp);
-    };
-  }, [dragState]);
-
-  const handleClockWidgetPointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    setDragState({
-      startX: event.clientX,
-      startY: event.clientY,
-      startRight: widgetPosition.right,
-      startTop: widgetPosition.top,
-    });
-  };
 
   const appCatalog = [
     { id: "about", name: "About", keywords: ["about", "info", "profile"], onOpen: () => openApp('about') },
@@ -585,6 +581,7 @@ export default function Desktop() {
   return (
     <>
       {booting && <BootScreen onFinish={() => setBooting(false)} />}
+      {!booting && <Guide />}
 
       <main
         className={`w-screen h-screen bg-cover bg-center relative overflow-hidden ${theme ? themeClasses[theme] : ''}`}
@@ -597,13 +594,11 @@ export default function Desktop() {
         }}
       >
         <TopBar currentTime={currentTime} currentDate={currentDate} onShutdown={handleShutdown} />
-        <ClockWidget
-          currentTime={currentTime}
-          currentDate={currentDate}
-          position={widgetPosition}
-          onPointerDown={handleClockWidgetPointerDown}
-        />
-        <WeatherWidget />
+        <div id="widgets-container" className="pointer-events-none absolute inset-0">
+          <div className="pointer-events-auto"> <ClockWidget currentTime={currentTime} currentDate={currentDate} />
+            <WeatherWidget />
+          </div>
+        </div>
 
         {shutdownOverlayVisible ? (
           <div
@@ -670,7 +665,7 @@ export default function Desktop() {
         ) : null}
 
         <div className="pointer-events-none absolute inset-x-0 top-10 z-50 flex justify-center px-4 pt-3">
-          <div className="pointer-events-auto w-full max-w-[560px] rounded-2xl border border-white/15 bg-slate-950/70 p-2 shadow-[0_16px_60px_rgba(0,0,0,0.35)] backdrop-blur-xl">
+          <div id="search-bar" className="pointer-events-auto w-full max-w-[560px] rounded-2xl border border-white/15 bg-slate-950/70 p-2 shadow-[0_16px_60px_rgba(0,0,0,0.35)] backdrop-blur-xl">
             <input
               type="text"
               value={searchQuery}
@@ -719,6 +714,7 @@ export default function Desktop() {
               key={app.id}
               title={appMap[app.id].title}
               dockId={`${app.id}-dock`}
+              windowId={`${app.id}-window`}
               isOpen={app.isOpen}
               isMinimized={app.isMinimized}
               onClose={() => closeApp(app.id)}

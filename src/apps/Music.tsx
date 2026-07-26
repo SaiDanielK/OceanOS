@@ -225,274 +225,109 @@ export default function Music(){
 	};
 
 	return (
-		<div className="
-			h-full
-			flex
-			flex-col
-			text-white
-		">
+		<div className="h-full flex flex-col text-white relative overflow-hidden">
+			{/* Background Image */}
+			<div className="absolute inset-0 z-0">
+				<img
+					src={songs[currentSong].cover}
+					alt=""
+					className="w-full h-full object-cover blur-3xl scale-125 opacity-40"
+				/>
+				<div className="absolute inset-0 bg-black/60" />
+			</div>
 
-
-			<div className="
-				flex
-				flex-col
-				items-center
-				pt-6
-				px-6
-				shrink-0
-			">
-
-
-				<p className="
-					text-xs
-					tracking-[0.4em]
-					uppercase
-					text-white/50
-					mb-5
-				">
+			<div className="relative z-10 flex flex-col items-center pt-6 px-6 shrink-0">
+				<p className="text-xs tracking-[0.4em] uppercase text-white/50 mb-5">
 					Now Playing
 				</p>
 
-
-
-				<div className="
-					w-56
-					h-56
-					rounded-3xl
-					bg-white/10
-					overflow-hidden
-					shadow-2xl
-					backdrop-blur-xl
-				">
-
+				<div className="w-64 h-64 rounded-3xl bg-white/10 overflow-hidden shadow-2xl shadow-black/50 backdrop-blur-xl">
 					<img
 						src={songs[currentSong].cover}
 						alt={songs[currentSong].title}
-						className="
-							w-full
-							h-full
-							object-cover
-						"
+						className="w-full h-full object-cover"
 					/>
-
 				</div>
 
-
-
-				<h2 className="
-					mt-6
-					text-3xl
-					font-semibold
-					text-center
-				">
-
+				<h2 className="mt-6 text-3xl font-semibold text-center">
 					{songs[currentSong].title}
-
 				</h2>
 
+				<p className="text-white/60">{songs[currentSong].artist}</p>
 
-
-				<p className="text-white/60">
-
-					{songs[currentSong].artist}
-
-				</p>
-
-
-
-
-				<div className="
-					mt-8
-					w-full
-					px-6
-				">
-
-
+				<div className="mt-8 w-full max-w-sm">
 					<div
-
-						className="
-							h-2
-							rounded-full
-							bg-white/10
-							overflow-hidden
-							cursor-pointer
-						"
-
+						className="h-2 rounded-full bg-white/10 overflow-hidden cursor-pointer group"
 						onClick={(e)=>{
-
 							if(!audioRef.current){
 								return;
 							}
 
-
 							const rect =
 								e.currentTarget.getBoundingClientRect();
-
 
 							const percent =
 								(e.clientX - rect.left)
 								/ rect.width;
 
-
 							audioRef.current.currentTime =
 								percent * duration;
-
 						}}
-
 					>
-
-
 						<div
-
-							className="
-								h-full
-								bg-cyan-400
-								transition-all
-							"
-
+							className="h-full bg-cyan-400 transition-all relative group-hover:bg-cyan-300"
 							style={{
 								width:`${progress}%`
 							}}
-
-						/>
-
-
+						>
+							<div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 w-4 h-4 rounded-full bg-cyan-300 opacity-0 group-hover:opacity-100 transition-opacity" />
+						</div>
 					</div>
 
-
-
-					<div className="
-						flex
-						justify-between
-						text-xs
-						text-white/50
-						mt-2
-					">
-
-						<span>
-							{formatTime(currentTime)}
-						</span>
-
-
-						<span>
-							{formatTime(duration)}
-						</span>
-
+					<div className="flex justify-between text-xs text-white/50 mt-2">
+						<span>{formatTime(currentTime)}</span>
+						<span>{formatTime(duration)}</span>
 					</div>
-
-
 				</div>
 
-
-
-
-				<div className="
-					flex
-					justify-center
-					gap-8
-					mt-8
-				">
-
-
+				<div className="flex justify-center items-center gap-6 mt-6">
 					<button
-
 						onClick={handlePrev}
-
-						className="
-							w-12
-							h-12
-							rounded-full
-							border
-							border-white/10
-							bg-white/10
-							backdrop-blur-xl
-						"
-
+						className="w-12 h-12 flex items-center justify-center rounded-full border border-white/10 bg-white/10 backdrop-blur-xl text-white/70 hover:bg-white/20 transition"
+						title="Previous"
 					>
 						◀
 					</button>
 
-
-
 					<button
-
 						onClick={togglePlay}
-
-						className="
-							w-16
-							h-16
-							rounded-full
-							bg-cyan-400
-							text-black
-							text-2xl
-						"
-
+						className="w-16 h-16 rounded-full bg-cyan-400 text-black text-2xl flex items-center justify-center shadow-lg shadow-cyan-500/30 hover:bg-cyan-300 transition"
+						title={isPlaying ? "Pause" : "Play"}
 					>
-
 						{isPlaying ? "❚❚" : "▶"}
-
 					</button>
 
-
-
 					<button
-
 						onClick={handleNext}
-
-						className="
-							w-12
-							h-12
-							rounded-full
-							border
-							border-white/10
-							bg-white/10
-							backdrop-blur-xl
-						"
-
+						className="w-12 h-12 flex items-center justify-center rounded-full border border-white/10 bg-white/10 backdrop-blur-xl text-white/70 hover:bg-white/20 transition"
+						title="Next"
 					>
 						▶▶
 					</button>
-
-
 				</div>
-
-
 			</div>
 
-
-
-
-			<div className="
-				flex-1
-				overflow-y-auto
-				mt-6
-				px-4
-				space-y-3
-			">
-
-
+			<div className="relative z-10 flex-1 overflow-y-auto mt-6 px-4 space-y-3 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
 				{songs.map((song,index)=>(
-
-
 					<div
-
 						key={song.title}
-
 						onClick={()=>{
-
 							setCurrentSong(index);
-
-
 							setTimeout(()=>{
-
 								audioRef.current?.play();
-
 								setIsPlaying(true);
-
 							},100);
-
 						}}
-
 						className={`
 							flex
 							items-center
@@ -512,31 +347,21 @@ export default function Music(){
 						`}
 
 					>
-
-
 						<img
-
 							src={song.cover}
-
 							alt={song.title}
-
 							className="
 								w-14
 								h-14
 								rounded-xl
 								object-cover
 							"
-
 						/>
 
-
-
 						<div>
-
 							<h3 className="font-medium">
 								{song.title}
 							</h3>
-
 
 							<p className="
 								text-sm
@@ -544,59 +369,30 @@ export default function Music(){
 							">
 								{song.artist}
 							</p>
-
 						</div>
-
-
 					</div>
-
-
 				))}
-
-
 			</div>
 
-
-
-
 			<audio
-
 				ref={audioRef}
-
 				src={songs[currentSong].file}
-
-
 				onLoadedMetadata={()=>{
-
 					if(audioRef.current){
-
 						setDuration(
 							audioRef.current.duration
 						);
-
 					}
-
 				}}
-
-
 				onTimeUpdate={()=>{
-
 					if(audioRef.current){
-
 						setCurrentTime(
 							audioRef.current.currentTime
 						);
-
 					}
-
 				}}
-
-
 				onEnded={handleNext}
-
 			/>
-
-
 		</div>
 	);
 }  

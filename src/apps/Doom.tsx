@@ -90,9 +90,9 @@ export default function Doom() {
 
 				<div className="
 					absolute
-					inset-x-6
-					inset-y-16
-					rounded-[40px]
+					inset-x-2
+					inset-y-12
+					rounded-[10px]
 					border
 					border-white/10
 					bg-black/60

@@ -33,7 +33,7 @@ export default function DockIcon({
   };
 
   return (
-    <div id={dockId} className="flex flex-col items-center">
+    <div id={dockId} className="flex flex-col items-center" style={{ viewTransitionName: dockId }}>
       <button
         onClick={handleClick}
         onMouseEnter={onHoverStart}

@@ -58,7 +58,7 @@ const visibleDockItems = apps
   }));
 
   return (
-    <div
+    <div id="dock"
       className="
         fixed
         bottom-5

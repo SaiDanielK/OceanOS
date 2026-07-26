@@ -48,31 +48,7 @@ export default function Gallery() {
 	const photos = usePhotoStore((state) => state.photos);
 	const removePhoto = usePhotoStore((state) => state.removePhoto);
 
-	const selectedImage = useDesktopStore((state) => state.selectedImage);
-
-	const [selectedPhoto, setSelectedPhoto] =
-		useState<GalleryPhoto | null>(() => {
-			if (!selectedImage) return null;
-
-			const foundImage = images.find(
-				(image) => image.src === selectedImage.path
-			);
-
-			return foundImage ?? null;
-		});
-
-	useEffect(() => {
-		if (!selectedImage) {
-			return;
-		}
-
-		const foundImage = images.find(
-			(image) => image.src === selectedImage.path
-		);
-		if (foundImage) {
-			setSelectedPhoto(foundImage);
-		}
-	}, [selectedImage, selectedImage?.path]);
+	const selectedImage = useDesktopStore(state => state.selectedImage);
 
 	const allPhotos: GalleryPhoto[] = [
 		...images,
@@ -82,8 +58,27 @@ export default function Gallery() {
 		})),
 	];
 
+	const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(() => {
+		if (!selectedImage) return null;
+		const foundIndex = allPhotos.findIndex(
+			(image) => image.src === selectedImage.path
+		);
+		return foundIndex !== -1 ? foundIndex : null;
+	});
 
-	if (selectedPhoto) {
+	useEffect(() => {
+		if (!selectedImage) return;
+		const foundIndex = allPhotos.findIndex(
+			(image) => image.src === selectedImage.path
+		);
+		if (foundIndex !== -1) {
+			setSelectedPhotoIndex(foundIndex);
+		}
+	}, [selectedImage, photos]);
+
+	const selectedPhoto = selectedPhotoIndex !== null ? allPhotos[selectedPhotoIndex] : null;
+
+	if (selectedPhoto && selectedPhotoIndex !== null) {
 		return (
 			<div className="
 				h-full
@@ -103,7 +98,7 @@ export default function Gallery() {
 				">
 
 					<button
-						onClick={() => setSelectedPhoto(null)}
+						onClick={() => setSelectedPhotoIndex(null)}
 						className="
 							rounded-2xl
 							border
@@ -118,14 +113,27 @@ export default function Gallery() {
 						← Back
 					</button>
 
+					<div className="flex gap-2">
+						<button
+							onClick={() => setSelectedPhotoIndex(prev => (prev! - 1 + allPhotos.length) % allPhotos.length)}
+							className="rounded-2xl border border-white/10 bg-white/10 px-4 py-2 backdrop-blur-xl hover:bg-white/20"
+						>
+							← Prev
+						</button>
+						<button
+							onClick={() => setSelectedPhotoIndex(prev => (prev! + 1) % allPhotos.length)}
+							className="rounded-2xl border border-white/10 bg-white/10 px-4 py-2 backdrop-blur-xl hover:bg-white/20"
+						>
+							Next →
+						</button>
+					</div>
 
 					{selectedPhoto.camera ? (
 						<button
 							onClick={() => {
 								if (!selectedPhoto.id) return;
-
 								removePhoto(selectedPhoto.id);
-								setSelectedPhoto(null);
+								setSelectedPhotoIndex(null);
 							}}
 							className="
 								rounded-2xl
@@ -203,7 +211,7 @@ export default function Gallery() {
 
 					<div
 						key={photo.id ?? index}
-						onClick={() => setSelectedPhoto(photo)}
+						onClick={() => setSelectedPhotoIndex(index)}
 						className="
 							overflow-hidden
 							rounded-2xl

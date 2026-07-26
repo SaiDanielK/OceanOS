@@ -79,12 +79,12 @@ const desktopFiles: MediaFile[] = [
 	{
 		name: "Welcome Notes.txt",
 		type: "note",
-		path: "/notes/Welcome Notes.txt",
+		path: "welcome",
 	},
 	{
 		name: "OceanOS Notes.txt",
 		type: "note",
-		path: "/notes/OceanOS Notes.txt",
+		path: "todos",
 	},
 ];
 
@@ -131,6 +131,7 @@ export default function Files() {
 
 	const openFile = (file: FileItem) => {
 		if (file.type === "folder") {
+			setCurrentFolder(file.name);
 			return;
 		}
 
@@ -240,20 +241,7 @@ export default function Files() {
 
 						key={item.name}
 
-						onClick={() => {
-
-							if (item.type === "folder") {
-
-								setCurrentFolder(item.name);
-
-								return;
-
-							}
-
-
-							openFile(item);
-
-						}}
+						onClick={() => openFile(item)}
 
 						className="
 							flex
