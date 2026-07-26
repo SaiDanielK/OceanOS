@@ -49,13 +49,23 @@ export default function Notes() {
 	const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
 
 	useEffect(() => {
-		// Temporarily disabled localStorage loading
-		setNotes(initialNotes);
-		setActiveNoteId(initialNotes[0].id);
+		const savedNotes = localStorage.getItem("oceanos-notes");
+		if (savedNotes) {
+			const parsedNotes = JSON.parse(savedNotes);
+			if (parsedNotes.length > 0) {
+				setNotes(parsedNotes);
+				setActiveNoteId(parsedNotes[0].id);
+			}
+		} else {
+			setNotes(initialNotes);
+			setActiveNoteId(initialNotes[0].id);
+		}
 	}, []);
 
 	useEffect(() => {
-		// Temporarily disabled localStorage saving
+		if (notes.length > 0) {
+			localStorage.setItem("oceanos-notes", JSON.stringify(notes));
+		}
 		fetch("/api/suggestions")
 			.then((res) => res.json())
 			.then((data) => setSuggestions(data));
@@ -150,7 +160,6 @@ export default function Notes() {
 			bg-black/70
 			text-white
 		">
-			{/* Sidebar */}
 			<div className="w-70 shrink-0 border-r border-white/10 bg-black/20 p-3 flex flex-col backdrop-blur-md overflow-y-hidden">
 				<div className="flex items-center justify-between mb-3">
 					<h2 className="text-lg font-semibold tracking-wide">Notes</h2>
@@ -185,7 +194,6 @@ export default function Notes() {
 					))}
 				</div>
 
-				{/* Suggestions Box */}
 				<div className="mt-auto pt-3 border-t border-white/10">
 					<h3 className="mb-2 text-sm font-semibold uppercase tracking-wide text-white/60 px-1">
 						Suggestions
@@ -230,7 +238,6 @@ export default function Notes() {
 				</div>
 			</div>
 
-			{/* Main Editor */}
 			<div className="flex flex-1 flex-col bg-gradient-to-br from-slate-900/50 to-slate-800/20">
 				{activeNote ? (
 					<div className="w-full max-w-4xl mx-auto flex flex-col h-full">
