@@ -213,6 +213,21 @@ export default function Guide() {
 
   return (
     <div className="pointer-events-none fixed inset-0 z-[998]">
+      {currentStep && (
+        <button
+          onClick={() => {
+            setStepIndex(-1);
+            setIsMinimized(true);
+            setPosition({ x: window.innerWidth - 100, y: window.innerHeight - 100 });
+          }}
+          className="pointer-events-auto fixed top-12 right-4 z-[1000] flex h-10 items-center justify-center gap-2 rounded-full border border-white/10 bg-slate-900/80 px-4 text-sm text-white shadow-lg backdrop-blur-lg transition hover:bg-white/20"
+          title="End Tour"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+          <span>End Tour</span>
+        </button>
+      )}
+
       {targetRect && (
         <div
           className="absolute rounded-2xl border-2 border-dashed border-cyan-400 bg-cyan-400/10 shadow-[0_0_0_9999px_rgba(0,0,0,0.5)] transition-all duration-500"

@@ -375,12 +375,20 @@ function TopBar({
 }) {
   const [wifiOpen, setWifiOpen] = useState(false);
   const [soundOpen, setSoundOpen] = useState(false);
-  const closeAllApps = useDesktopStore((state) => state.closeAllApps);
 
   return (
     <div className="pointer-events-none absolute inset-x-0 top-0 z-40 flex h-10 items-center justify-between border-b border-white/15 bg-black/20 px-4 text-sm text-white/95 shadow-[0_1px_0_rgba(255,255,255,0.1)] backdrop-blur-md">
-      <div className="flex items-center gap-3">
-        <span>OceanOS</span>
+      <div className="flex items-center gap-4">
+        <img src="/logo.jpg" alt="OceanOS Logo" className="h-6 w-6 rounded-full" />
+        <span className="font-serif italic bg-gradient-to-r from-blue-100 to-cyan-400 bg-clip-text text-transparent inline-block">OceanOS</span>
+        <div className="flex items-center gap-3 text-white/80">
+          <span className="font-bold text-white">Finder</span>
+          <span>File</span>
+          <span>Edit</span>
+          <span>View</span>
+          <span>Go</span>
+          <span>Help</span>
+        </div>
         <button
           type="button"
           onClick={() => useDesktopStore.getState().closeAllApps()}
@@ -567,8 +575,8 @@ export default function Desktop() {
 
   const wallpaperMap = {
     ocean: "/wallpaper.jpg",
-    midnight: "/themes/midnight.jpg",
-    sunset: "/themes/sunset.jpg",
+    midnight: "/midnight.jpg",
+    sunset: "/sunset.jpg",
   };
 
   const theme = useDesktopStore((state) => state.theme);

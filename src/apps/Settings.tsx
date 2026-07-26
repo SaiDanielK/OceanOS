@@ -8,8 +8,8 @@ type WallpaperOption = "ocean" | "midnight" | "sunset";
 
 const wallpapers: Array<{ id: WallpaperOption; label: string; image: string }> = [
   { id: "ocean", label: "Ocean", image: "/wallpaper.jpg" },
-  { id: "midnight", label: "Midnight", image: "/themes/midnight.jpg" },
-  { id: "sunset", label: "Sunset", image: "/themes/sunset.jpg" },
+  { id: "midnight", label: "Midnight", image: "/midnight.jpg" },
+  { id: "sunset", label: "Sunset", image: "/sunset1.jpg" },
 ];
 
 const themeColors: Record<typeof themes[number], string> = {
