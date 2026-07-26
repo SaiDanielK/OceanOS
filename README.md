@@ -1,5 +1,8 @@
 # OceanOS 🌊
-
+### Update: OceanOS 1.0 Ready!
+### Update: OceanOS 2.0 Beta Deployed on Vercel and ready to Commit on Github!
+### Update: OceanOS 2.0 has been published!
+### Update: OceanOS 3.0 Beta: New info coming soon. Stay tuned for more updates!
 Welcome to OceanOS, a beautifully crafted, ocean-themed desktop simulation built with Next.js and TypeScript. This project offers a feature-rich user experience that mimics a modern operating system, complete with a boot screen, draggable windows, a functional dock, and a suite of applications—all running within your web browser.
 
 The primary goal of OceanOS is to showcase a polished and interactive user interface, demonstrating the power of modern web technologies to create complex, desktop-like applications.
