@@ -180,7 +180,7 @@ export default function BootScreen({ onFinish }: BootScreenProps) {
           </div>
 
           <div className="mt-8 text-center text-xs tracking-wider text-white/40">
-            OCEAN OS v2.0 (Updating to 3.0 Beta Soon!) • BUILD 2607
+            OCEAN OS v3.0 (Updating to 4.0 Beta Soon!) • BUILD 2607
           </div>
 
           <div className="mt-4 text-sm text-white/60">
