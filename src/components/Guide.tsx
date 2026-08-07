@@ -11,6 +11,10 @@ type GuideStep = {
   action?: () => void;
 };
 
+type GuideProps = {
+  desktopMode?: "macos" | "windows";
+};
+
 const steps: GuideStep[] = [
   {
     selector: "#search-bar",
@@ -25,13 +29,13 @@ const steps: GuideStep[] = [
     position: "left",
   },
   {
-    selector: "#dock",
-    title: "The Dock",
-    content: "Your favorite apps live here. Click an icon to open an app.",
+    selector: "#desktop-grid",
+    title: "Desktop Icons",
+    content: "Your apps now sit in a Windows-style grid. Click an icon to open an app.",
     position: "top",
   },
   {
-    selector: "#settings-dock-icon",
+    selector: "#settings-desktop-icon",
     title: "Settings App",
     content: "Let's check out the settings. I'll open it for you.",
     position: "top",
@@ -71,12 +75,17 @@ const steps: GuideStep[] = [
   },
 ];
 
-export default function Guide() {
+export default function Guide({ desktopMode = "windows" }: GuideProps) {
   const [stepIndex, setStepIndex] = useState(-1);
   const [isMinimized, setIsMinimized] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
   const [targetRect, setTargetRect] = useState<DOMRect | null>(null);
-  const [position, setPosition] = useState({ x: window.innerWidth - 100, y: window.innerHeight - 100 });
+  const getDefaultPosition = () => ({
+    x: window.innerWidth - 100,
+    y: desktopMode === "macos" ? window.innerHeight - 140 : window.innerHeight - 100,
+  });
+
+  const [position, setPosition] = useState(getDefaultPosition);
   const [dragState, setDragState] = useState<{
     startX: number;
     startY: number;
@@ -113,6 +122,10 @@ export default function Guide() {
   }, [currentStep]);
 
   useEffect(() => {
+    setPosition(getDefaultPosition());
+  }, [desktopMode]);
+
+  useEffect(() => {
     if (!dragState) return;
 
     const handlePointerMove = (event: PointerEvent) => {
@@ -147,6 +160,17 @@ export default function Guide() {
     });
   };
 
+  useEffect(() => {
+    if (!isMinimized) return;
+
+    const handleResize = () => {
+      setPosition({ x: window.innerWidth - 100, y: window.innerHeight - 100 });
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [isMinimized]);
+
   const startTour = () => {
     setIsMinimized(false);
     setStepIndex(0);
@@ -158,7 +182,7 @@ export default function Guide() {
         onClick={startTour}
         onPointerDown={handlePointerDown}
         className="fixed z-[999] h-16 w-16 cursor-grab rounded-full border-2 border-white/20 bg-slate-900/80 text-2xl shadow-2xl backdrop-blur-lg active:cursor-grabbing"
-        style={{ left: position.x, top: position.y }}
+        style={{ left: position.x, top: Math.min(position.y, window.innerHeight - 120 - 25) }}
         title="Start Tour"
       >
         ❓
@@ -177,7 +201,7 @@ export default function Guide() {
               onClick={() => {
                 setHasStarted(true);
                 setIsMinimized(true);
-                setPosition({ x: window.innerWidth - 100, y: window.innerHeight - 100 });
+                setPosition(getDefaultPosition());
               }}
               className="flex-1 rounded-xl bg-white/10 py-2 transition hover:bg-white/20"
             >
@@ -218,7 +242,7 @@ export default function Guide() {
           onClick={() => {
             setStepIndex(-1);
             setIsMinimized(true);
-            setPosition({ x: window.innerWidth - 100, y: window.innerHeight - 100 });
+            setPosition(getDefaultPosition());
           }}
           className="pointer-events-auto fixed top-12 right-4 z-[1000] flex h-10 items-center justify-center gap-2 rounded-full border border-white/10 bg-slate-900/80 px-4 text-sm text-white shadow-lg backdrop-blur-lg transition hover:bg-white/20"
           title="End Tour"

@@ -38,6 +38,7 @@ export default function Window({
   onPositionChange,
 }: WindowProps) {
   const windowRef = useRef<HTMLDivElement>(null);
+  const [hasAnimatedIn, setHasAnimatedIn] = useState(false);
 
   const [maximized, setMaximized] = useState(false);
 
@@ -60,6 +61,27 @@ export default function Window({
   useEffect(() => {
     setBounds(b => ({ ...b, x: position.x, y: position.y }));
   }, [position.x, position.y]);
+
+  useEffect(() => {
+    if (!isOpen || isMinimized) return;
+    const windowEl = windowRef.current;
+    if (!windowEl) return;
+
+    if (!hasAnimatedIn) {
+      windowEl.animate(
+        [
+          { transform: "scale(0.95)", opacity: 0, filter: "blur(6px)" },
+          { transform: "scale(1)", opacity: 1, filter: "blur(0px)" },
+        ],
+        {
+          duration: 260,
+          easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+          fill: "forwards",
+        }
+      );
+      setHasAnimatedIn(true);
+    }
+  }, [isOpen, isMinimized, hasAnimatedIn]);
 
   if (!isOpen || isMinimized) return null;
 
@@ -128,7 +150,8 @@ export default function Window({
 
   return (
     <Rnd
-      style={{ zIndex }}
+      className="pointer-events-auto"
+      style={{ zIndex, pointerEvents: "auto" }}
       size={{
         width: bounds.width,
         height: bounds.height,

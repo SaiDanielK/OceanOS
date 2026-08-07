@@ -69,9 +69,9 @@ export const useDesktopStore = create<DesktopStore>((set, get) => ({
   installedApps: ["about", "music", "gallery", "settings", "camera", "shell", "wiki", "notes", "calculator", "doom", "files", "store"],
   apps: APP_IDS.map((id, index) => ({
     id,
-    isOpen: id === 'about',
+    isOpen: false,
     isMinimized: false,
-    zIndex: id === 'about' ? 1 : 0,
+    zIndex: 0,
     position: { x: 50 + index * 20, y: 50 + index * 20 },
   })),
 

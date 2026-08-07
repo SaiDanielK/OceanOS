@@ -1,44 +1,146 @@
 # OceanOS 🌊
-### Update: OceanOS 1.0 Ready!
-### Update: OceanOS 2.0 Beta Deployed on Vercel and ready to Commit on Github!
-### Update: OceanOS 2.0 has been published!
-### Update: OceanOS 3.0 Beta: New info coming soon. Stay tuned for more updates!
-Welcome to OceanOS, a beautifully crafted, ocean-themed desktop simulation built with Next.js and TypeScript. This project offers a feature-rich user experience that mimics a modern operating system, complete with a boot screen, draggable windows, a functional dock, and a suite of applications—all running within your web browser.
 
-The primary goal of OceanOS is to showcase a polished and interactive user interface, demonstrating the power of modern web technologies to create complex, desktop-like applications.
+<p align="center">
+  <img src="https://stardance.hackclub.com/rails/active_storage/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6MjYwODE2LCJwdXIiOiJibG9iX2lkIn19--f8e66b04c846bb623ce6a2af84e584bf252979eb/Screenshot%202026-08-07%20094054.png" alt="OceanOS 3.0 Desktop" width="100%">
+</p>
 
-## Features
+<p align="center">
+  <strong>A modern ocean-themed desktop environment built with Next.js, React, and TypeScript.</strong>
+</p>
 
-OceanOS is packed with features that create a comprehensive and immersive desktop experience:
+<p align="center">
+  <a href="https://ocean-os-one.vercel.app">Live Demo</a>
+  •
+  <a href="https://github.com/SaiDanielK/OceanOS/tree/WindowsOS-Version">Repository</a>
+</p>
 
-*   **Boot Sequence**: A realistic startup screen with a progress bar and system logs that plays a startup sound before loading the desktop.
-*   **Desktop Environment**: A dynamic and customizable desktop with selectable wallpapers and themes.
-*   **Window Management**:
-    *   Powered by `react-rnd`, windows for all applications can be dragged, resized, and focused.
-    *   Standard window controls for closing, maximizing, and minimizing.
-    *   A smooth, custom animation for minimizing windows directly to their corresponding dock icon.
-*   **Dock**: An interactive dock at the bottom of the screen with a macOS-style magnification effect on hover. It shows which apps are running and allows users to launch or restore them.
-*   **Top Bar**: A persistent top menu bar displaying the current time and date, system status icons (Wi-Fi, Sound, Battery), and a "Shutdown" button.
-*   **Widgets**:
-    *   **Clock Widget**: A draggable analog and digital clock.
-    *   **Weather Widget**: A draggable widget that fetches and displays live weather data based on the user's geolocation.
-*   **Application Launcher**: A central search bar to quickly find and launch any of the installed applications.
-*   **Context Menu**: A right-clickable context menu on the desktop for quick actions like opening system apps or closing all windows.
+---
 
-### Included Applications
+# Introduction
 
-OceanOS comes with a variety of built-in applications to explore:
+Welcome to OceanOS🌊!
 
-*   **Files**: A basic file explorer interface.
-*   **Web Browser**: An embedded Wikipedia browser.
-*   **App Store**: A simulated store for viewing and managing applications.
-*   **Ocean Shell**: A terminal/command-line interface.
-*   **Settings**: An application to personalize the desktop wallpaper and theme.
-*   **Music & Gallery**: Media applications for a complete OS feel.
-*   **Utilities**: Essential apps like Notes, Calculator, Calendar, and Weather.
-*   **And more**: Including a Camera app and even a "TikTok" app (a fun integration).
+OceanOS is a modern, ocean-themed desktop environment built for the web. Originally inspired by macOS, OceanOS has continued to evolve with every release. Version 3.0 introduces a redesigned Windows-inspired desktop while preserving the ocean aesthetic that defines the project.
 
-# Important Information about OceanOS:
+Built with Next.js, React, and TypeScript, OceanOS recreates the feel of a desktop operating system directly in the browser, featuring draggable windows, customizable themes, built-in applications, widgets, and an immersive user experience.
+
+The goal of OceanOS is to showcase what's possible with modern web technologies by creating a polished, interactive desktop experience that feels both familiar and unique.
+
+---
+
+# Changelog
+
+## Version 3.0 (WindowsOS Edition)
+
+- Complete desktop redesign with a Windows-inspired layout.
+- New taskbar for more familiar navigation.
+- Redesigned desktop using a cleaner grid layout.
+- Updated top navigation bar with fully functional controls.
+- Replaced the battery indicator with a custom OceanOS-themed component.
+- Refreshed Wi-Fi and volume controls.
+- Improved taskbar clock formatting.
+- Modernized desktop widgets.
+- Added built-in wallpaper customization through the Settings app.
+- Continued UI polish and overall performance improvements.
+
+## Version 2.0
+
+- Introduced a redesigned desktop experience.
+- Added more built-in applications and widgets.
+- Improved animations and overall responsiveness.
+- Published on GitHub and deployed to Vercel.
+
+## Version 1.0
+
+- Initial public release of OceanOS.
+- Featured a complete desktop simulation with draggable windows, widgets, applications, and an interactive dock.
+
+---
+
+# Features
+
+OceanOS includes a wide range of features designed to simulate a real desktop operating system.
+
+## Desktop Experience
+
+- Realistic boot sequence with startup logs, progress animation, and startup sound.
+- Fully interactive desktop environment.
+- Windows-inspired taskbar (Version 3.0).
+- Functional top menu bar with system controls.
+- Ocean-themed user interface.
+
+## Window Management
+
+- Draggable and resizable windows powered by `react-rnd`.
+- Minimize, maximize, and close controls.
+- Smooth window animations.
+
+## System Interface
+
+- Custom battery indicator.
+- Responsive Wi-Fi and volume controls.
+- Live clock and calendar.
+- Modern desktop widgets.
+
+## Personalization
+
+- Ocean theme enabled by default.
+- Change wallpapers directly from the Settings application.
+
+## Widgets
+
+- Analog and digital clock.
+- Live weather widget.
+- Additional desktop widgets.
+
+## Productivity
+
+- Application launcher.
+- Desktop context menu.
+- Multiple built-in utilities.
+
+---
+
+# Included Applications
+
+OceanOS comes with a growing collection of built-in applications, including:
+
+- Files
+- Web Browser
+- App Store
+- Ocean Shell
+- Settings
+- Music
+- Gallery
+- Notes
+- Calculator
+- Calendar
+- Weather
+- Camera
+- TikTok
+- And more.
+
+---
+
+# Tech Stack
+
+- **Framework:** Next.js
+- **UI Library:** React
+- **Language:** TypeScript
+- **Window Management:** react-rnd
+- **Deployment:** Vercel
+
+---
+
+# Live Demo
+
+Try the latest version here:
+
+**https://ocean-os-one.vercel.app**
+
+---
+
+# Important Information about OceanOS
 
 ## Getting Started
 
@@ -54,23 +156,50 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open **http://localhost:3000** with your browser to see the result.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+This project uses **next/font** to automatically optimize and load **Geist**, a modern font family provided by Vercel.
 
 ## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+To learn more about Next.js, check out these resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Next.js Documentation — https://nextjs.org/docs
+- Learn Next.js — https://nextjs.org/learn
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+You can also visit the Next.js GitHub repository for more information and to contribute to the framework.
 
 ## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The easiest way to deploy OceanOS is with the Vercel Platform.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+For deployment instructions, visit:
+
+https://nextjs.org/docs/app/building-your-application/deploying
+
+---
+
+# Roadmap
+
+Future versions of OceanOS will continue expanding the desktop experience with:
+
+- More built-in applications
+- Additional desktop customization
+- Better animations and performance
+- Improved window management
+- More widgets and utilities
+- New experimental features
+
+---
+
+# Contributing
+
+Contributions, ideas, bug reports, and feature requests are always welcome. Feel free to open an issue or submit a pull request if you'd like to help improve OceanOS.
+
+---
+
+# License
+
+This project is open source and available under the MIT License.

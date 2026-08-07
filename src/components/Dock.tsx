@@ -18,17 +18,16 @@ export default function Dock() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
 const getSize = (index: number) => {
-  if (hoveredIndex === null) return 42;
+  if (hoveredIndex === null) return 56;
 
   const distance = Math.abs(index - hoveredIndex);
 
-  if (distance === 0) return 70;
-  if (distance === 1) return 65;
-  if (distance === 2) return 50;
-  if (distance === 3) return 45;
+  if (distance === 0) return 88;
+  if (distance === 1) return 78;
+  if (distance === 2) return 68;
+  if (distance === 3) return 62;
 
-
-  return 35;
+  return 56;
 };
 
 const appIcons: Record<string, string> = {
@@ -68,12 +67,12 @@ const visibleDockItems = apps
 
         flex
         items-end
-        gap-4
+        gap-3
 
-        px-9.5
-        py-4
+        px-4
+        py-3
 
-        rounded-3xl
+        rounded-[1.75rem]
 
         bg-white/10
         backdrop-blur-2xl

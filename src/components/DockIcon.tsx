@@ -38,13 +38,13 @@ export default function DockIcon({
         onClick={handleClick}
         onMouseEnter={onHoverStart}
         onMouseLeave={onHoverEnd}
-        className={bouncing ? "dock-bounce" : ""}
+        className={`rounded-2xl bg-transparent p-0 ${bouncing ? "dock-bounce" : ""}`}
       >
         <img
           src={icon}
           alt="Dock Icon"
-          style={{ width: size, height: size }}
-          className="transition-all duration-158"
+          style={{ width: size, height: size, objectFit: "contain" }}
+          className="transition-all duration-200 ease-out drop-shadow-[0_8px_18px_rgba(0,0,0,0.25)]"
         />
       </button>
 
